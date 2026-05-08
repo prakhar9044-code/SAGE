@@ -2754,23 +2754,21 @@ let currentSummaryText = "";
 // ⚠️ PASTE YOUR FREE YOUTUBE DATA API KEY HERE ⚠️
 // const YOUTUBE_API_KEY = 'AIzaSyAL8cuB_TLoLLLIk7F_yZqxVS74fkPObv4';
 
-// 1. Fetch REAL Videos from YouTube API
-// 1. Fetch REAL Videos via Secure Backend
 async function fetchVideoRecommendations(topic) {
+    if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === 'YOUR_YOUTUBE_API_KEY_HERE') {
+    if(window.showToast) showToast("Missing YouTube API Key!", "error");
+    return [];
+    }
+
     try {
         const searchQuery = encodeURIComponent(topic + " educational lecture tutorial");
-        
-        // Sending the search query to your secure Vercel backend instead
+        // Sending the search query to your secure backend instead
         const url = `/api/youtube?q=${searchQuery}`; 
         
         const response = await fetch(url);
-        
-        if (!response.ok) throw new Error("Backend API Error");
+        if (!response.ok) throw new Error("YouTube API Error");
         
         const data = await response.json();
-        
-        // If the backend returned an error message, throw it
-        if (data.error) throw new Error(data.error);
         
         return data.items.map(item => {
             const tempDiv = document.createElement('div');
@@ -2786,106 +2784,66 @@ async function fetchVideoRecommendations(topic) {
         });
     } catch (error) {
         console.error("YouTube Fetch Error:", error);
-        if(window.showToast) showToast("Failed to fetch videos from backend.", "error");
+        if(window.showToast) showToast("Failed to fetch videos from YouTube.", "error");
         return [];
     }
 }
-// Trigger search on Enter
-ytInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') btnSearchYt.click(); });
 
-// 3. Open Summarizer Workspace (The missing function!)
-function openSummarizer(video) {
-    if (!video || !video.id) return;
+// 2. Search & Render Grid
+btnSearchYt?.addEventListener('click', async () => {
+    const topic = ytInput.value.trim();
+    if (!topic) {
+        if(window.showToast) showToast("Please enter a topic first.", "error");
+        return;
+    }
 
-    currentVideoTitle = video.title;
-    
-    // Hide grid, show workspace
-    ytGrid.style.display = 'none';
-    ytWorkspace.style.display = 'flex';
-    ytWorkspace.style.minHeight = '500px'; 
-    
-    // Set iframe
-    ytPlayer.src = `https://www.youtube.com/embed/${video.id}?autoplay=1`;
-    
-    // Reset Summary UI
-    ytSummaryContent.innerHTML = `
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-gray); text-align: center; padding: 40px;">
-            <i data-lucide="bot" class="animate-pulse" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 16px;"></i>
-            <h3 style="color: var(--text-dark); margin-bottom: 8px;">Analyzing Video...</h3>
-            <p>SAGE is extracting the transcript for "${video.title}"</p>
+    ytGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 60px; text-align: center; color: var(--text-gray);">
+            <i data-lucide="loader" class="animate-spin" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 16px;"></i>
+            <h3>Searching YouTube for the best "${topic}" videos...</h3>
         </div>
     `;
     if(window.lucide) lucide.createIcons();
 
-    gsap.fromTo(ytWorkspace, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
-
-    // Trigger Groq AI Summary
-    generateVideoSummary(video.title);
-}
-
-// 4. Generate Summary via Groq API
-async function generateVideoSummary(title) {
+    const videos = await fetchVideoRecommendations(topic);
     
-    try {
-        const prompt = `Act as an expert tutor. Provide a comprehensive, highly structured study summary for a lecture titled "${title}". 
-        Include:
-        1. A brief overview.
-        2. 3-4 Key Takeaways (bullet points).
-        3. A "Crucial Concept" to remember.
-        Use HTML formatting (<h3>, <ul>, <li>, <strong>) so it renders beautifully in a web dashboard. Do not use markdown backticks.`;
+    if (videos.length === 0) {
+        ytGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: #EF4444; border: 1px dashed #EF4444; border-radius: 16px;">
+                <h3>No videos found, or API Key is missing.</h3>
+            </div>
+        `;
+        return;
+    }
 
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{ role: "user", content: prompt }], temperature: 0.5 })
-        });
+    ytGrid.innerHTML = ''; 
 
-        if (!response.ok) throw new Error("Failed to contact Groq API.");
-
-        const data = await response.json();
-        currentSummaryText = data.choices[0].message.content;
+    videos.forEach((vid) => {
+        const card = document.createElement('div');
+        card.className = 'yt-card gs-yt-anim';
+        card.innerHTML = `
+            <div class="yt-thumbnail-wrap">
+                <img src="https://img.youtube.com/vi/${vid.id}/maxresdefault.jpg" class="yt-thumbnail" onerror="this.src='https://img.youtube.com/vi/${vid.id}/hqdefault.jpg'">
+                <div class="yt-play-overlay"><div class="yt-play-btn"><i data-lucide="play" style="width: 20px; fill: white;"></i></div></div>
+            </div>
+            <div style="padding: 16px; display: flex; flex-direction: column; flex: 1;">
+                <h4 style="font-size: 14px; color: var(--text-dark); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${vid.title}</h4>
+                <div style="margin-top: auto; font-size: 12px; color: var(--text-gray); display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 500; color: var(--primary);"><i data-lucide="user" style="width: 12px; display: inline-block; margin-right: 4px;"></i>${vid.channel}</span>
+                    <span>${vid.date}</span>
+                </div>
+            </div>
+        `;
         
-        ytSummaryContent.innerHTML = `<div style="opacity: 0;" id="summary-render-target">${currentSummaryText}</div>`;
-        gsap.to('#summary-render-target', { opacity: 1, duration: 0.8 });
+        // This is where it attaches the function to the click!
+        card.addEventListener('click', () => openSummarizer(vid));
+        ytGrid.appendChild(card);
+    });
 
-    } catch (err) {
-        console.error(err);
-        ytSummaryContent.innerHTML = `<p style="color: #EF4444; padding: 20px;">Failed to generate summary. Please try again.</p>`;
-    }
-}
-
-// 5. Close Workspace & Stop Audio
-btnCloseYtWorkspace?.addEventListener('click', () => {
-    ytPlayer.src = ""; // Stops the audio
-    ytWorkspace.style.display = 'none';
-    ytGrid.style.display = 'grid';
-    gsap.fromTo('.yt-card', { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.3, stagger: 0.05 });
-});
-
-// 6. Save Summary to Database
-btnSaveSummary?.addEventListener('click', async () => {
-    if (!dbClient || !currentUser) return showToast("Must be logged in to save.", "error");
-    if (!currentSummaryText) return showToast("Wait for summary.", "error");
-
-    btnSaveSummary.innerHTML = `<i data-lucide="loader" class="animate-spin" style="width: 14px;"></i> Saving...`;
     if(window.lucide) lucide.createIcons();
-
-    try {
-        const { error } = await dbClient.from('notes').insert([{ 
-            user_id: currentUser.id, 
-            title: `Summary: ${currentVideoTitle}`,
-            content: currentSummaryText 
-        }]);
-        if (error) throw error;
-        showToast("Summary saved to your Notes!", "success");
-        if(typeof loadNotes === 'function') loadNotes(); 
-    } catch (err) {
-        showToast("Failed to save note.", "error");
-    } finally {
-        btnSaveSummary.innerHTML = `<i data-lucide="save" style="width: 14px;"></i> Save as Note`;
-        if(window.lucide) lucide.createIcons();
-    }
+    gsap.fromTo('.gs-yt-anim', { y: 40, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.1, ease: "back.out(1.2)" });
 });
+
 // =========================================
 // 10.5 AI WEB QUIZ DISCOVER SYSTEM
 // =========================================
