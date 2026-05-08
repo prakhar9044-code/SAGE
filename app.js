@@ -1226,9 +1226,7 @@ chatForm?.addEventListener('submit', async (e) => {
     appendMessage(`<i data-lucide="loader" class="animate-spin" style="width: 18px; color: var(--text-gray);"></i>`, false, typingId);
 
     try {
-        if(GROQ_API_KEY === 'YOUR_GROQ_API_KEY_HERE') {
-            throw new Error("Missing Groq API Key! Please paste it into app.js");
-        }
+        
 
         // Notice: NO API KEY HERE ANYMORE!
         const response = await fetch('/api/chat', {
@@ -1673,9 +1671,7 @@ btnGenerateFc?.addEventListener('click', async () => {
     const topic = fcTopicInput.value.trim();
     if (!topic) return showToast("Please enter a topic to study.", "error");
 
-    if(typeof GROQ_API_KEY === 'undefined' || GROQ_API_KEY === 'YOUR_GROQ_API_KEY_HERE') {
-        return showToast("Groq API Key is missing. Please add it to app.js", "error");
-    }
+    
 
     // Switch UI to Loading State
     fcWorkspace.style.display = 'none';
@@ -2884,11 +2880,7 @@ function openSummarizer(video) {
 
 // 4. Generate Summary via Groq API
 async function generateVideoSummary(title) {
-    if(typeof GROQ_API_KEY === 'undefined' || !GROQ_API_KEY || GROQ_API_KEY === 'YOUR_GROQ_API_KEY_HERE') {
-        ytSummaryContent.innerHTML = `<p style="color: #EF4444; padding: 20px;">Groq API Key is missing. Cannot generate summary.</p>`;
-        return;
-    }
-
+    
     try {
         const prompt = `Act as an expert tutor. Provide a comprehensive, highly structured study summary for a lecture titled "${title}". 
         Include:
@@ -2989,10 +2981,7 @@ btnGenerateWebQuiz?.addEventListener('click', async () => {
         return;
     }
 
-    if(typeof GROQ_API_KEY === 'undefined' || !GROQ_API_KEY || GROQ_API_KEY === 'YOUR_GROQ_API_KEY_HERE') {
-        if(window.showToast) showToast("Groq API Key missing. Cannot fetch web quiz.", "error");
-        return;
-    }
+    
 
     // Loading UI
     discoverResult.innerHTML = `
