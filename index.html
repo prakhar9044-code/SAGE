@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAGE | Personal AI-Powered Learning Ecosystem</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="sage-logo.png" type="image/x-icon">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.32/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/object_detection"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+    <!-- 1. TensorFlow Core (Must load first) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
+    <!-- 2. COCO-SSD Model (For Phone Detection) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+    <!-- 3. MediaPipe Pose & Camera (For Posture) -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    <!-- MediaPipe Pose Requirements -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script> -->
+</head>
+<body>
+
+    <div id="preloader">
+        <canvas id="preloader-canvas"></canvas>
+        <div class="preloader-logo"><i data-lucide="book-open"></i> SAGE</div>
+        <div class="loader-bar-bg"><div class="loader-bar-fill"></div></div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <!-- <div class="logo interactive-icon"><i data-lucide="book-open"></i> SAGE</div> -->
+
+            <div class="logo interactive-icon" style="display: flex; align-items: center; gap: 10px;">
+                <img src="sage-logo.png" alt="SAGE" style="width: 32px; height: 32px; border-radius: 8px;"> 
+                SAGE
+            </div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#agents">AI Agents</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#faq">FAQ</a>
+            </div>
+            <div class="nav-actions">
+                <button class="icon-btn interactive-icon floating-ui theme-toggle-btn" aria-label="Toggle Theme">
+                    <i data-lucide="moon" class="icon-moon" style="position:absolute;"></i>
+                    <i data-lucide="sun" class="icon-sun" style="position:absolute; opacity:0; transform: rotate(90deg) scale(0);"></i>
+                </button>
+                <a href="#" id="btn-open-auth" class="nav-signin interactive-icon">Sign In</a>
+                <button class="btn btn-primary floating-ui" id="btn-nav-signup">Get Started <i data-lucide="sparkles" style="width: 16px;"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main-content" style="opacity: 0;">
+        
+        <section class="hero">
+            <i data-lucide="book" class="bg-icon bg-icon-1 gs-float interactive-icon"></i>
+            <i data-lucide="brain" class="bg-icon bg-icon-2 gs-float interactive-icon" style="animation-delay: 1s;"></i>
+
+            <div class="container gs-reveal">
+                <div class="badge floating-ui"><i data-lucide="sparkles" style="width: 16px;"></i> Powered by Advanced AI</div>
+                <h1>Your Personal AI-Powered <br><span class="text-blue">Learning Ecosystem</span></h1>
+                <p>Transform your study experience with intelligent AI agents that summarize, quiz, plan, and tutor—all in one elegant platform.</p>
+                
+                <div class="hero-cta">
+                    <button class="btn btn-primary floating-ui btn-lg" id="btn-hero-start">Start Learning Free <i data-lucide="arrow-right"></i></button>
+                    <button class="btn btn-outline floating-ui btn-lg action-demo">Watch Demo</button>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item"><i data-lucide="users" class="interactive-icon"></i> 50,000+ students</div>
+                    <div class="stat-item"><i data-lucide="file-text" class="interactive-icon"></i> 2M+ notes processed</div>
+                    <div class="stat-item"><i data-lucide="star" class="interactive-icon"></i> 98% satisfaction</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="section gs-section bg-alt">
+            <div class="container">
+                <div class="section-header gs-stagger-up">
+                    <div class="badge bg-white-badge"><i data-lucide="zap" class="interactive-icon"></i> Powerful Features</div>
+                    <h2>Everything you need to <br><span class="text-blue">excel in your studies</span></h2>
+                    <p>A comprehensive suite of AI-powered tools designed to make learning efficient, engaging, and effective.</p>
+                </div>
+
+                <div class="grid-3" id="features-grid">
+                    <div class="card gs-scale-in interactive-card">
+                        <div class="icon-box interactive-icon"><i data-lucide="file-text"></i></div>
+                        <h3>AI Notes Summarizer</h3>
+                        <p>Transform lengthy notes into concise, intelligible summaries. Save hours of reading and focus on what matters most.</p>
+                    </div>
+                    <div class="card featured gs-scale-in interactive-card">
+                        <div class="icon-box interactive-icon"><i data-lucide="message-square"></i></div>
+                        <h3 class="text-blue">AI Doubt Solver</h3>
+                        <p>Get instant, detailed explanations to your questions. Like having a personal tutor available 24/7.</p>
+                    </div>
+                    <div class="card featured gs-scale-in interactive-card">
+                        <div class="icon-box interactive-icon"><i data-lucide="brain"></i></div>
+                        <h3 class="text-blue">Smart Quiz Generator</h3>
+                        <p>Auto-generate customized quizzes from your notes. Test your knowledge and identify gaps in understanding.</p>
+                    </div>
+                    <div class="card gs-scale-in interactive-card">
+                        <div class="icon-box interactive-icon"><i data-lucide="layers"></i></div>
+                        <h3>Interactive Flashcards</h3>
+                        <p>Create and review flashcards with spaced repetition. Master complex topics with proven learning techniques.</p>
+                    </div>
+                    <div class="card gs-scale-in interactive-card">
+                        <div class="icon-box interactive-icon"><i data-lucide="calendar"></i></div>
+                        <h3>AI Study Planner</h3>
+                        <p>Intelligent scheduling that adapts to your pace. Never miss a deadline with personalized study plans.</p>
+                    </div>
+                    <div class="card gs-scale-in interactive-card">
+                        <div class="icon-box interactive-icon"><i data-lucide="mic"></i></div>
+                        <h3>AI Voice Tutor</h3>
+                        <p>Have natural conversations about any topic. Practice speaking and get instant feedback on your understanding.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="agents" class="section gs-section">
+            <div class="container">
+                <div class="section-header gs-stagger-up">
+                    <h2>Meet your AI <br><span class="text-blue">learning companions</span></h2>
+                    <p>Five specialized AI agents working in harmony to provide a complete learning experience.</p>
+                </div>
+
+                <div class="grid-5" id="agents-grid">
+                    <div class="agent-card gs-scale-in interactive-card">
+                        <div class="agent-icon icon-blue interactive-icon"><i data-lucide="graduation-cap"></i></div>
+                        <h3>Tutor Agent</h3>
+                        <p>Explains complex concepts with clarity and patience</p>
+                    </div>
+                    <div class="agent-card gs-scale-in interactive-card">
+                        <div class="agent-icon icon-purple interactive-icon"><i data-lucide="calendar"></i></div>
+                        <h3>Planner Agent</h3>
+                        <p>Organizes your study schedule intelligently</p>
+                    </div>
+                    <div class="agent-card gs-scale-in interactive-card">
+                        <div class="agent-icon icon-teal interactive-icon"><i data-lucide="brain"></i></div>
+                        <h3>Quiz Agent</h3>
+                        <p>Creates personalized assessments to test knowledge</p>
+                    </div>
+                    <div class="agent-card gs-scale-in interactive-card">
+                        <div class="agent-icon icon-green interactive-icon"><i data-lucide="rotate-cw"></i></div>
+                        <h3>Revision Agent</h3>
+                        <p>Optimizes spaced repetition for better retention</p>
+                    </div>
+                    <div class="agent-card gs-scale-in interactive-card">
+                        <div class="agent-icon icon-red interactive-icon"><i data-lucide="heart"></i></div>
+                        <h3>Motivation Agent</h3>
+                        <p>Keeps you inspired and on track with your goals</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section gs-section bg-alt">
+            <div class="container">
+                <div class="section-header gs-stagger-up">
+                    <h2>Loved by students <br><span class="text-blue">around the world</span></h2>
+                </div>
+                <div class="testimonial-card gs-scale-in" id="testimonial-card">
+                    <i data-lucide="quote" class="quote-icon interactive-icon"></i>
+                    <div class="testimonial-text">
+                        "The YouTube summarizer is a game-changer for online courses. I can extract key points from 2-hour lectures in minutes and focus my time on practice problems."
+                    </div>
+                    <div class="user-info">
+                        <div class="user-profile">
+                            <div class="avatar interactive-icon">DK</div>
+                            <div>
+                                <div class="user-name">David Kim</div>
+                                <div class="user-title">Business Student</div>
+                            </div>
+                        </div>
+                        <div class="stars">
+                            <i data-lucide="star" style="fill: currentColor;" class="interactive-icon"></i>
+                            <i data-lucide="star" style="fill: currentColor;" class="interactive-icon"></i>
+                            <i data-lucide="star" style="fill: currentColor;" class="interactive-icon"></i>
+                            <i data-lucide="star" style="fill: currentColor;" class="interactive-icon"></i>
+                            <i data-lucide="star" style="fill: currentColor;" class="interactive-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing" class="section gs-section">
+            <div class="container">
+                <div class="section-header gs-stagger-up">
+                    <h2>Simple, transparent <br><span class="text-blue">pricing for everyone</span></h2>
+                    <p>Start free, upgrade when you need more. All plans include a 14-day money-back guarantee.</p>
+                </div>
+
+                <div class="pricing-grid">
+                    <div class="price-card gs-stagger-up interactive-card">
+                        <h3>Free</h3>
+                        <p class="price-sub">Perfect for getting started</p>
+                        <div class="price-val">$0 <span>forever</span></div>
+                        <button class="btn btn-outline floating-ui btn-full action-get-started">Get Started</button>
+                        <ul class="feature-list">
+                            <li><i data-lucide="check" class="interactive-icon"></i> 5 AI summaries per day</li>
+                            <li><i data-lucide="check" class="interactive-icon"></i> Basic quiz generation</li>
+                            <li><i data-lucide="check" class="interactive-icon"></i> 10 flashcards</li>
+                            <li><i data-lucide="check" class="interactive-icon"></i> Community support</li>
+                        </ul>
+                    </div>
+
+                    <div class="price-card popular gs-stagger-up interactive-card">
+                        <div class="popular-badge interactive-icon"><i data-lucide="sparkles"></i> Most Popular</div>
+                        <h3>Pro</h3>
+                        <p class="price-sub">For serious students</p>
+                        <div class="price-val">$12 <span>per month</span></div>
+                        <button class="btn btn-primary floating-ui btn-full action-get-started">Start Free Trial</button>
+                        <ul class="feature-list">
+                            <li><i data-lucide="check" class="interactive-icon"></i> Unlimited AI summaries</li>
+                            <li><i data-lucide="check" class="interactive-icon"></i> Advanced quiz generation</li>
+                            <li><i data-lucide="check" class="interactive-icon"></i> Unlimited flashcards</li>
+                            <li><i data-lucide="check" class="interactive-icon"></i> AI voice tutor</li>
+                            <li><i data-lucide="check" class="interactive-icon"></i> YouTube summarizer</li>
+                        </ul>
+                    </div>
+
+                    <div class="price-card gs-stagger-up interactive-card">
+                        <h3>Team</h3>
+                        <p class="price-sub">For study groups</p>
+                        <div class="price-val">$29 <span>per month</span></div>
+                        <button class="btn btn-outline floating-ui btn-full action-contact-sales">Contact Sales</button>
+                        <ul class="feature-list">
+                            <li><i data-lucide="check" class="interactive-icon"></i> Everything in Pro</li>
+                            <li><i data-lucide="check" class="interactive-icon"></i> Up to 5 team members</li>
+                            <li><i data-lucide="check" class="interactive-icon"></i> Shared study rooms</li>
+                            <li><i data-lucide="check" class="interactive-icon"></i> Collaborative notes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="section gs-section bg-alt">
+            <div class="container">
+                <div class="section-header gs-stagger-up">
+                    <h2>Frequently asked <br><span class="text-blue">questions</span></h2>
+                </div>
+
+                <div class="faq-container">
+                    <div class="faq-item active gs-stagger-up">
+                        <div class="faq-question">How does the AI summarization work? <i data-lucide="chevron-down"></i></div>
+                        <div class="faq-answer"><div class="faq-inner">Our AI uses advanced NLP to analyze your notes, identify key concepts, and generate concise summaries while maintaining context.</div></div>
+                    </div>
+                    <div class="faq-item gs-stagger-up">
+                        <div class="faq-question">Can I use SAGE on mobile devices? <i data-lucide="chevron-down"></i></div>
+                        <div class="faq-answer"><div class="faq-inner">Yes, SAGE is fully responsive and works beautifully on all devices. Your data syncs automatically across platforms.</div></div>
+                    </div>
+                    <div class="faq-item gs-stagger-up">
+                        <div class="faq-question">Is my data secure and private? <i data-lucide="chevron-down"></i></div>
+                        <div class="faq-answer"><div class="faq-inner">Absolutely. We use enterprise-grade encryption. We never share your personal notes with third parties.</div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer gs-section">
+            <div class="container">
+                <div class="footer-grid gs-stagger-up">
+                    <div class="footer-brand">
+                        <div class="logo interactive-icon"><i data-lucide="book-open"></i> SAGE</div>
+                        <p>Your personal AI-powered learning ecosystem. Transform the way you study with intelligent tools designed for modern learners.</p>
+                        
+                        <div class="social-icons">
+                            <a href="#" class="floating-ui" aria-label="Twitter">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+                            </a>
+                            <a href="#" class="floating-ui" aria-label="GitHub">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.03c3.18-.35 6.52-1.6 6.52-7.03a5.2 5.2 0 0 0-1.38-3.56 5.06 5.06 0 0 0-.13-3.51s-1.12-.36-3.66 1.36a12.08 12.08 0 0 0-6.6 0c-2.54-1.72-3.66-1.36-3.66-1.36a5.06 5.06 0 0 0-.13 3.51A5.2 5.2 0 0 0 3 11.94c0 5.42 3.3 6.68 6.47 7.03a4.8 4.8 0 0 0-1 2.97v4"/><path d="M9 20a3 3 0 0 1-3 3 3 3 0 0 1-3-3"/></svg>
+                            </a>
+                            <a href="#" class="floating-ui" aria-label="LinkedIn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                            </a>
+                            <a href="#" class="floating-ui" aria-label="Email">
+                                <i data-lucide="mail" style="width: 20px; height: 20px;"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Product</h4>
+                        <ul><li><a href="#">Features</a></li><li><a href="#">Pricing</a></li><li><a href="#">AI Agents</a></li></ul>
+                    </div>
+                    <div>
+                        <h4>Company</h4>
+                        <ul><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li></ul>
+                    </div>
+                    <div>
+                        <h4>Resources</h4>
+                        <ul><li><a href="#">Documentation</a></li><li><a href="#">Help Center</a></li><li><a href="#">API</a></li></ul>
+                    </div>
+                </div>
+                <div class="footer-bottom gs-stagger-up">
+                    <div>© 2026 SAGE. All rights reserved.</div>
+                    <div class="footer-links"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+                </div>
+            </div>
+        </footer>
+
+        <div class="fab floating-ui" id="scroll-top"><i data-lucide="arrow-up"></i></div>
+    </main>
+
+    <div id="auth-view">
+        <div class="auth-layout">
+            
+            <div class="panel-left gs-auth-anim">
+                <div class="bg-wave wave-1"></div>
+                <div class="bg-wave wave-2"></div>
+                <canvas id="auth-canvas"></canvas>
+                
+                <div class="logo auth-logo"><i data-lucide="book-open"></i> SAGE</div>
+                
+                <div class="promo-content">
+                    <div class="badge shadow-badge"><i data-lucide="sparkles"></i> AI-Powered Assistant</div>
+                    <h1 class="promo-title">Your Personal <br><span class="text-blue">AI Learning</span> Ecosystem</h1>
+                    <p class="promo-desc">Study smarter with AI agents that summarize, quiz, plan, and tutor — all in one place.</p>
+
+                    <div class="feature-pills">
+                        <div class="pill">
+                            <div class="pill-icon"><i data-lucide="wand-2"></i></div>
+                            <div class="pill-text"><h4>AI Summaries</h4><p>Instant notes from content</p></div>
+                        </div>
+                        <div class="pill">
+                            <div class="pill-icon"><i data-lucide="file-check-2"></i></div>
+                            <div class="pill-text"><h4>Smart Quizzes</h4><p>Adaptive learning tests</p></div>
+                        </div>
+                        <div class="pill">
+                            <div class="pill-icon"><i data-lucide="calendar"></i></div>
+                            <div class="pill-text"><h4>Study Planner</h4><p>Custom plans that fit you</p></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-dashboard" id="glass-mockup">
+                        <div class="db-sidebar">
+                            <div class="db-logo"><i data-lucide="book-open"></i> SAGE</div>
+                            <div class="db-nav-item active"><i data-lucide="layout-dashboard"></i> Overview</div>
+                            <div class="db-nav-item"><i data-lucide="message-square"></i> AI Chat</div>
+                            <div class="db-nav-item"><i data-lucide="file-text"></i> Notes</div>
+                            <div class="db-nav-item"><i data-lucide="check-square"></i> Quizzes</div>
+                            <div class="db-nav-item"><i data-lucide="calendar"></i> Planner</div>
+                            <div class="db-nav-item"><i data-lucide="layers"></i> Flashcards</div>
+                            <div class="db-nav-item"><i data-lucide="bar-chart-2"></i> Analytics</div>
+                            <div class="db-nav-item"><i data-lucide="settings"></i> Settings</div>
+                        </div>
+                        <div class="db-main">
+                            <div class="db-header">
+                                <h3>Good morning, Prakhar! 👋</h3>
+                                <div class="db-streak"><i data-lucide="flame"></i> 7 Day Streak</div>
+                            </div>
+                            <div class="db-stats-row">
+                                <div class="db-stat-card"><span class="label">Study Time</span><span class="val">24.5h <span class="trend">+12%</span></span><div class="db-sparkline"></div></div>
+                                <div class="db-stat-card"><span class="label">Quizzes Taken</span><span class="val">32 <span class="trend">+8%</span></span><div class="db-sparkline"></div></div>
+                                <div class="db-stat-card"><span class="label">Accuracy</span><span class="val">92% <span class="trend">+2%</span></span><div class="db-sparkline"></div></div>
+                            </div>
+                            <div class="db-bottom-row">
+                                <div class="db-notes">
+                                    <h4>Recent Notes</h4>
+                                    <div class="note-item"><div class="note-icon red-icon"><i data-lucide="file-text"></i></div><div class="note-text"><h5>Biology Chapter 5.pdf</h5><p>2h ago</p></div></div>
+                                    <div class="note-item"><div class="note-icon yellow-icon"><i data-lucide="file-text"></i></div><div class="note-text"><h5>Physics Formulas.pdf</h5><p>5h ago</p></div></div>
+                                    <div class="note-item"><div class="note-icon green-icon"><i data-lucide="file-text"></i></div><div class="note-text"><h5>Chemistry Notes.pdf</h5><p>1d ago</p></div></div>
+                                </div>
+                                <div class="db-ai-card">
+                                    <span>AI Recommendation</span>
+                                    <p>Focus more on Organic Chemistry based on quiz performance.</p>
+                                    <div class="db-ai-btn">Start Learning →</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-right">
+                <div class="back-btn interactive-icon" id="btn-close-auth"><i data-lucide="arrow-left"></i> Back to Website</div>
+                
+                <div class="auth-container">
+                    <div class="auth-tabs gs-auth-anim">
+                        <div class="a-tab active" data-tab="login">Log In</div>
+                        <div class="a-tab" data-tab="signup">Sign Up</div>
+                    </div>
+
+                    <div class="auth-header gs-auth-anim" id="auth-header-text">
+                        <h2>Welcome back 👋</h2>
+                        <p>Log in to continue your learning journey</p>
+                    </div>
+
+                    <div class="social-row gs-auth-anim">
+                        <button class="btn-social floating-ui action-oauth" data-provider="Google">
+                            <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                            Google
+                        </button>
+                        <button class="btn-social floating-ui action-oauth" data-provider="GitHub">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                            GitHub
+                        </button>
+                    </div>
+
+                    <div class="divider gs-auth-anim">or continue with email</div>
+
+                    <form id="auth-form" class="gs-auth-anim auth-form">
+                        
+                        <div class="input-group" id="field-name" style="display: none;">
+                            <label>Full Name</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="user" class="left-icon"></i>
+                                <input type="text" id="name-input" placeholder="John Doe">
+                            </div>
+                        </div>
+
+                        <div id="auth-primary-fields">
+                            <div class="input-group">
+                                <label id="label-primary">Email address</label>
+                                <div class="input-wrapper">
+                                    <i data-lucide="mail" class="left-icon" id="icon-primary"></i>
+                                    <input type="email" id="primary-input" placeholder="Enter your email" required>
+                                </div>
+                            </div>
+                            <div class="input-group" id="field-password">
+                                <label>Password</label>
+                                <div class="input-wrapper">
+                                    <i data-lucide="lock" class="left-icon"></i>
+                                    <input type="password" id="password-input" placeholder="Enter your password" required>
+                                    <i data-lucide="eye-off" class="eye-btn interactive-icon" id="toggle-pw"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-options" id="auth-options">
+                            <label class="checkbox-wrap"><input type="checkbox" checked><span>Remember me</span></label>
+                            <a href="#" class="forgot-link action-forgot">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="btn-submit floating-ui" id="btn-submit">
+                            <span id="submit-text">Log In</span> <i data-lucide="arrow-right" id="submit-icon"></i>
+                        </button>
+                    </form>
+
+                    <div class="divider gs-auth-anim" id="otp-divider">or</div>
+                    
+                    <button type="button" class="btn-otp floating-ui gs-auth-anim" id="btn-toggle-otp">
+                        <i data-lucide="phone" style="width: 18px; color: var(--primary);"></i> <span id="otp-text">Login with Mobile Number</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-view" style="display: none; opacity: 0; min-height: 100vh; background-color: var(--bg-gray);">
+        <div class="dash-new-layout">
+            
+            <aside class="dash-new-sidebar">
+    <div class="sidebar-top">
+        <!-- <div class="dash-logo">
+            <div class="logo-icon-bg"><i data-lucide="box" style="color: white; fill: currentColor;"></i></div> 
+            SAGE
+        </div> -->
+
+        <div class="dash-logo" style="display: flex; align-items: center; gap: 12px; padding: 0 24px 32px;">
+            <img src="sage-logo.png" alt="SAGE Logo" style="width: 36px; height: 36px; border-radius: 10px; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);"> 
+            SAGE
+        </div>
+        <nav class="dash-nav">
+            <a href="#" class="nav-link" data-view="overview"><i data-lucide="home"></i> Dashboard</a>
+            <!-- <a href="#" class="nav-link" data-view="youtube"><i data-lucide="youtube"></i> Smart Video Hub</a> -->
+            <a href="#" class="nav-link" data-view="youtube"><i data-lucide="play-square"></i> Smart Video Hub</a>
+            <a href="#" class="nav-link" data-view="focus"><i data-lucide="shield-check"></i> Zen Mode</a>
+            <a href="#" class="nav-link" data-view="deepwork"><i data-lucide="headphones"></i> Deep Work</a>
+            <a href="#" class="nav-link" data-view="chat"><i data-lucide="users"></i> AI Tutor</a>
+            <a href="#" class="nav-link" data-view="notes"><i data-lucide="file-edit"></i> Notes</a>
+            <!-- <a href="#" class="nav-link active" data-view="quizzes"><i data-lucide="instagram"></i> Quizzes</a> -->
+            <a href="#" class="nav-link" data-view="quizzes"><i data-lucide="check-square"></i> Quizzes</a>
+            <a href="#" class="nav-link" data-view="codelab"><i data-lucide="code"></i> CodeLab</a>
+            <a href="#" class="nav-link" data-view="flashcards"><i data-lucide="copy"></i> Flashcards</a>
+            <a href="#" class="nav-link" data-view="planner"><i data-lucide="calendar"></i> Study Planner</a>
+            <a href="#" class="nav-link" data-view="progress"><i data-lucide="bar-chart-2"></i> Progress</a>
+            <a href="#" class="nav-link" data-view="leaderboard"><i data-lucide="users"></i> Leaderboard</a>
+            <a href="#" class="nav-link" data-view="achievements"><i data-lucide="award"></i> Achievements</a>
+            <a href="#" class="nav-link" data-view="settings"><i data-lucide="settings"></i> Settings</a>
+        </nav>
+    </div>
+    
+    <div class="sidebar-bottom">
+        <div class="upgrade-card">
+            <div class="upgrade-icon"><i data-lucide="sparkles"></i> Upgrade to Pro</div>
+            <p>Unlock unlimited quizzes, detailed analytics, and AI explanations.</p>
+            <button class="btn btn-outline btn-full action-get-started" style="background: transparent; border: 1px solid rgba(59, 130, 246, 0.2); color: var(--primary);">Upgrade Now</button>
+        </div>
+        <div class="user-profile-sm" id="header-profile-pic">
+            <img src="https://ui-avatars.com/api/?name=User&background=3B82F6&color=fff" alt="Profile" class="profile-pic-img" id="nav-profile-pic-img">
+            <div class="profile-info">
+                <h4 id="nav-user-name">Alex Sharma</h4>
+                <p id="nav-user-email">alex@example.com</p>
+            </div>
+            <i data-lucide="chevron-down" style="color: var(--text-gray); width: 16px;"></i>
+        </div>
+    </div>
+</aside>
+
+            <div class="dash-new-main">
+                
+                <header class="dash-new-header">
+                    <div class="search-box">
+                        <i data-lucide="search"></i>
+                        <input type="text" placeholder="Search anything...">
+                        <span class="shortcut-key">⌘ K</span>
+                    </div>
+                    <div class="header-actions" style="position: relative;">
+                        <button class="icon-btn theme-toggle-btn"><i data-lucide="sun" class="icon-sun"></i><i data-lucide="moon" class="icon-moon" style="display:none;"></i></button>
+                        
+                        <button class="icon-btn notification-btn" id="btn-toggle-notifs">
+                            <i data-lucide="bell"></i>
+                            <span class="badge-dot" id="notif-badge" style="position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; background: #EF4444; border-radius: 50%; display: none;"></span>
+                        </button>
+
+                        <div class="notification-dropdown" id="notification-panel" style="display: none;">
+                            <div class="notif-header">
+                                <h3>Notifications</h3>
+                                <span id="mark-all-read" style="font-size: 12px; color: var(--primary); cursor: pointer; font-weight: 500;">Mark all read</span>
+                            </div>
+                            <div class="notif-list" id="notif-list-container">
+                                <div class="empty-notifs">
+                                    <i data-lucide="bell-off"></i>
+                                    <p>No new notifications</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="dash-new-content" style="display: block;">
+                    
+                    <div id="view-overview" class="dash-view active" style="display: flex; gap: 32px; width: 100%;">
+                        <div class="content-center">
+                            
+                            <div class="welcome-header">
+                                <div>
+                                    <h1 id="dash-welcome-text">Loading...</h1>
+                                    <p>Ready to learn something amazing today?</p>
+                                </div>
+                                <button class="btn btn-outline" id="btn-logout" style="color: #EF4444; border-color: #FCA5A5; background: white;"><i data-lucide="log-out"></i> Log Out</button>
+                            </div>
+
+                            <div class="stats-row">
+                                <div class="s-card">
+                                    <div class="s-card-header"><span class="icon-flame"><i data-lucide="flame"></i></span> Study Streak</div>
+                                    <h2><span id="stat-streak">0</span> <span>days</span></h2>
+                                    <p class="s-sub text-gray">Keep it up! 🔥</p>
+                                </div>
+                                <div class="s-card">
+                                    <div class="s-card-header"><span class="icon-diamond"><i data-lucide="hexagon"></i></span> XP Earned</div>
+                                    <h2><span id="stat-xp">0</span> <span>points</span></h2>
+                                    <p class="s-sub text-blue">From your learning</p>
+                                </div>
+                                <div class="s-card">
+                                    <div class="s-card-header"><span class="icon-check"><i data-lucide="check-circle-2"></i></span> Quizzes Solved</div>
+                                    <h2><span id="stat-quizzes">0</span> <span>quizzes</span></h2>
+                                    <p class="s-sub text-green">Great job</p>
+                                </div>
+                                <div class="s-card">
+                                    <div class="s-card-header"><span class="icon-clock"><i data-lucide="clock"></i></span> Study Time</div>
+                                    <h2><span id="stat-hours">0.0</span> <span>hours</span></h2>
+                                    <p class="s-sub text-blue">Total time</p>
+                                </div>
+                            </div>
+
+                            <div class="mid-row">
+                                <div class="chart-panel">
+                                    <div class="panel-head">
+                                        <h3>Your Learning Progress</h3>
+                                        <select class="custom-select"><option>This Week</option></select>
+                                    </div>
+                                    <div class="fake-chart">
+                                        <div class="chart-y-axis"><span>6h</span><span>4h</span><span>2h</span><span>0h</span></div>
+                                        <div class="chart-area">
+                                            <svg viewBox="0 0 500 200" class="line-svg">
+                                                <path d="M 0,150 L 80,100 L 160,100 L 240,90 L 320,40 L 400,80 L 480,50" fill="none" stroke="var(--primary)" stroke-width="3" />
+                                                <circle cx="0" cy="150" r="4" fill="var(--primary)"/>
+                                                <circle cx="80" cy="100" r="4" fill="var(--primary)"/>
+                                                <circle cx="160" cy="100" r="4" fill="var(--primary)"/>
+                                                <circle cx="240" cy="90" r="4" fill="var(--primary)"/>
+                                                <circle cx="320" cy="40" r="4" fill="var(--primary)"/>
+                                                <circle cx="400" cy="80" r="4" fill="var(--primary)"/>
+                                                <circle cx="480" cy="50" r="4" fill="var(--primary)"/>
+                                            </svg>
+                                        </div>
+                                        <div class="chart-x-axis"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="ai-panel">
+                                    <h3>AI Study Assistant</h3>
+                                    <p class="text-gray" style="font-size: 14px; margin-bottom: 20px;">I'm here to help you learn better today!</p>
+                                    <div class="ai-actions">
+                                        <div class="ai-action-item">
+                                            <div class="action-icon" style="color: #3B82F6; background: #EFF6FF;"><i data-lucide="file-text"></i></div>
+                                            <div><h4>Summarize Notes</h4><p>Get key points</p></div>
+                                        </div>
+                                        <div class="ai-action-item">
+                                            <div class="action-icon" style="color: #3B82F6; background: #EFF6FF;"><i data-lucide="check-square"></i></div>
+                                            <div><h4>Generate Quiz</h4><p>Test your knowledge</p></div>
+                                        </div>
+                                        <div class="ai-action-item">
+                                            <div class="action-icon" style="color: #10B981; background: #ECFDF5;"><i data-lucide="zap"></i></div>
+                                            <div><h4>Explain Concept</h4><p>Get AI explanation</p></div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary btn-full action-trigger-chat" style="margin-top: 16px;" onclick="document.querySelector('[data-view=\'chat\']').click()">Chat with AI <i data-lucide="arrow-right" style="width: 16px;"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="panel-head" style="margin-top: 24px;">
+                                <h3>Continue Learning</h3>
+                                <a href="#" class="text-blue" style="font-size: 14px; font-weight: 500;">View All</a>
+                            </div>
+                            
+                            <div class="learning-grid">
+                                <div class="learning-card">
+                                    <div class="l-card-top">
+                                        <div class="l-icon" style="color: #3B82F6; background: #EFF6FF;"><i data-lucide="grid"></i></div>
+                                        <span class="l-tag text-gray">Data Structures</span>
+                                    </div>
+                                    <h4>Arrays & Linked Lists</h4>
+                                    <p class="text-blue" style="font-size: 13px; font-weight: 600; margin-top: 16px;">75% complete</p>
+                                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 75%; background: var(--primary);"></div></div>
+                                </div>
+                                <div class="learning-card">
+                                    <div class="l-card-top">
+                                        <div class="l-icon" style="color: #8B5CF6; background: #F5F3FF;"><i data-lucide="cpu"></i></div>
+                                        <span class="l-tag text-gray">Machine Learning</span>
+                                    </div>
+                                    <h4>Supervised Learning</h4>
+                                    <p class="text-blue" style="font-size: 13px; font-weight: 600; margin-top: 16px;">60% complete</p>
+                                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 60%; background: var(--primary);"></div></div>
+                                </div>
+                                <div class="learning-card">
+                                    <div class="l-card-top">
+                                        <div class="l-icon" style="color: #10B981; background: #ECFDF5;"><i data-lucide="layout"></i></div>
+                                        <span class="l-tag text-gray">Web Development</span>
+                                    </div>
+                                    <h4>React Fundamentals</h4>
+                                    <p class="text-blue" style="font-size: 13px; font-weight: 600; margin-top: 16px;">45% complete</p>
+                                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 45%; background: var(--primary);"></div></div>
+                                </div>
+                                <div class="learning-card">
+                                    <div class="l-card-top">
+                                        <div class="l-icon" style="color: #F59E0B; background: #FFFBEB;"><i data-lucide="functions"></i></div>
+                                        <span class="l-tag text-gray">Mathematics</span>
+                                    </div>
+                                    <h4>Linear Algebra</h4>
+                                    <p class="text-blue" style="font-size: 13px; font-weight: 600; margin-top: 16px;">80% complete</p>
+                                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 80%; background: var(--primary);"></div></div>
+                                </div>
+                            </div>
+
+                            <div class="bottom-row">
+                                <div class="donut-panel">
+                                    <div class="panel-head">
+                                        <h3>Study Time Distribution</h3>
+                                        <select class="custom-select"><option>This Week</option></select>
+                                    </div>
+                                    <div class="donut-wrapper">
+                                        <div class="donut-chart-css">
+                                            <div class="donut-inner">
+                                                <h3 id="donut-hours">0</h3>
+                                                <p>Hours</p>
+                                            </div>
+                                        </div>
+                                        <div class="donut-legend">
+                                            <div class="legend-item"><span class="dot" style="background: #3B82F6;"></span> Coding <span>43%</span></div>
+                                            <div class="legend-item"><span class="dot" style="background: #8B5CF6;"></span> Theory <span>33%</span></div>
+                                            <div class="legend-item"><span class="dot" style="background: #F59E0B;"></span> Practice <span>24%</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="recent-panel">
+                                    <div class="panel-head">
+                                        <h3>Your Notes</h3>
+                                            <a href="#" class="text-blue action-upload-note" style="font-size: 14px; font-weight: 500;">+ Add New Note</a>
+                                    </div>
+                                    <div class="activity-list" id="db-notes-list">
+                                        <p class="text-gray" style="font-size: 13px;">Loading your notes from Supabase...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-right">
+                            <div class="right-widget">
+                                <div class="widget-header">
+                                    <h3>Study Calendar</h3>
+                                    <div class="cal-nav">May 2026 <i data-lucide="arrow-left" class="interactive-icon"></i> <i data-lucide="arrow-right" class="interactive-icon"></i></div>
+                                </div>
+                                <div class="calendar-grid">
+                                    </div>
+                                <div class="cal-legend"><span class="dot-indicator" style="position:static;"></span> Study Day</div>
+                            </div>
+
+                            <div class="right-widget">
+                                <div class="widget-header">
+                                    <h3>Tasks to Complete</h3>
+                                    <button class="btn btn-outline btn-sm" id="btn-add-task">+ Add</button>
+                                </div>
+                                <div class="task-list" id="db-task-list">
+                                    <p class="text-gray" style="font-size: 13px;">Loading tasks from Supabase...</p>
+                                </div>
+                            </div>
+
+                            <div class="right-widget streak-widget" style="position: relative; overflow: hidden;">
+                                <i data-lucide="flame" class="bg-flame" style="position: absolute; right: -20px; bottom: 20px; width: 120px; height: 120px; color: #FFFBEB; z-index: 0;"></i>
+                                <div style="position: relative; z-index: 1;">
+                                    <h3>Study Streak</h3>
+                                    <div class="streak-head">
+                                        <div class="streak-icon"><i data-lucide="flame"></i></div>
+                                        <div>
+                                            <h2 style="font-size: 24px;"><span id="widget-streak">0</span> <span style="font-size: 14px; color: var(--text-gray); font-weight: 500;">days</span></h2>
+                                            <p class="text-gray" style="font-size: 12px;">Current streak</p>
+                                        </div>
+                                    </div>
+                                    <div class="streak-timeline">
+    <div class="s-day"><i data-lucide="minus"></i><span>M</span></div>
+    <div class="s-day"><i data-lucide="minus"></i><span>T</span></div>
+    <div class="s-day"><i data-lucide="minus"></i><span>W</span></div>
+    <div class="s-day"><i data-lucide="minus"></i><span>T</span></div>
+    <div class="s-day"><i data-lucide="minus"></i><span>F</span></div>
+    <div class="s-day"><i data-lucide="minus"></i><span>S</span></div>
+    <div class="s-day"><i data-lucide="minus"></i><span>S</span></div>
+</div>
+<p class="text-gray" style="font-size: 13px; margin-top: 16px;">Complete a task today to start your streak!</p>
+                                    <!-- <p class="text-gray" style="font-size: 13px; margin-top: 16px;">Great! Keep maintaining your streak.</p> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div id="view-chat" class="dash-view" style="width: 100%; max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; height: calc(100vh - 100px); position: relative; overflow: hidden; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-alt);">
+        
+                        <canvas id="neural-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
+
+                        <div class="panel-head" style="margin-bottom: 0; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10; border-bottom: 1px solid var(--border-color);">
+                            <h2 style="margin: 0;">AI Tutor</h2>
+                            <div id="tutor-status" class="badge-sm" style="background: var(--primary-light); color: var(--primary); padding: 6px 12px; border-radius: 20px; transition: 0.3s; font-weight: 600;"><i data-lucide="zap" style="width: 14px; margin-right: 4px; display:inline-block;"></i> Powered by Groq</div>
+                        </div>
+
+                        <div class="chat-history" id="chat-history" style="flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; z-index: 10; position: relative;">
+                            <div class="chat-msg ai-msg" style="display: flex; gap: 12px;">
+                                <div class="msg-avatar" style="width: 36px; height: 36px; border-radius: 10px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><i data-lucide="bot"></i></div>
+                                <div class="msg-bubble" style="background: var(--bg-white); padding: 14px 18px; border-radius: 16px; border-top-left-radius: 4px; max-width: 80%; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-color); line-height: 1.5;">Hello! I'm SAGE. I'm connected to Groq and ready to help you study. What are we tackling today?</div>
+                            </div>
+                        </div>
+                        
+                        <form id="chat-form" class="chat-input-area" style="display: flex; gap: 12px; background: rgba(255,255,255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 20px; z-index: 10; border-top: 1px solid var(--border-color);">
+                            <input type="text" id="chat-input" placeholder="Ask your AI Tutor anything..." style="flex: 1; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-white); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                            <button type="submit" class="btn btn-primary" id="chat-submit-btn">Send <i data-lucide="send" style="width: 16px;"></i></button>
+                        </form>
+                    </div>
+
+
+                    <div id="view-notes" class="dash-view" style="width: 100%;">
+                        <div class="panel-head" style="display: flex; justify-content: space-between;">
+                            <h2>Your Notes Database</h2>
+                            <!-- <button class="btn btn-primary" onclick="document.getElementById('btn-upload-notes').click()">Upload New Note</button>
+                              -->
+                            <button class="btn btn-primary action-upload-note">Upload New Note</button>
+                        </div>
+                        <div style="margin-top: 24px; padding: 60px; text-align: center; background: var(--bg-white); border-radius: 16px; border: 1px dashed var(--border-color);">
+                            <i data-lucide="folder-open" style="width: 48px; height: 48px; color: var(--text-gray); margin-bottom: 16px;"></i>
+                            <h3 class="text-gray">Notes library is active.</h3>
+                            <p class="text-gray" style="font-size: 14px; margin-top: 8px;">Upload a PDF or document to get started.</p>
+                        </div>
+                    </div>
+
+
+                    <div id="view-quizzes" class="dash-view" style="width: 100%;">
+    
+    <div id="quiz-list-container">
+        <div class="panel-head" style="margin-bottom: 24px;">
+            <h2>Quizzes & Assessments</h2>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-outline" id="btn-discover-quizzes" style="background: var(--bg-white);">
+                    <i data-lucide="globe" style="width: 16px; color: var(--primary);"></i> Discover Web Quizzes
+                </button>
+                <button class="btn btn-primary" id="btn-show-create-quiz">+ Create New Quiz</button>
+            </div>
+        </div>
+
+        <div id="quiz-discover-panel" style="display: none; background: linear-gradient(135deg, var(--bg-white) 0%, var(--primary-light) 100%); border: 1px solid #BFDBFE; border-radius: 16px; padding: 24px; margin-bottom: 32px; box-shadow: var(--shadow-sm);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="sparkles"></i> AI Web Quiz Generator
+                </h3>
+                <button class="icon-btn" id="btn-close-discover" style="border: none; background: transparent;"><i data-lucide="x"></i></button>
+            </div>
+            <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                <input type="text" id="discover-quiz-topic" placeholder="What topic do you want to test yourself on? (e.g., Python Basics)" style="flex: 1; padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-white); font-size: 15px; outline: none;">
+                <button class="btn btn-primary" id="btn-generate-web-quiz">Fetch Quiz</button>
+            </div>
+            <div id="discover-quiz-result"></div>
+        </div>
+
+        <h3 style="font-size: 16px; color: var(--text-dark); margin-bottom: 16px;">Your Saved Quizzes</h3>
+        <div class="grid-3" id="db-quiz-list">
+            <p class="text-gray" style="grid-column: span 3; padding: 20px;">Loading quizzes from database...</p>
+        </div>
+    </div>
+
+    <div id="quiz-create-container" style="display: none;">
+        <div class="panel-head" style="margin-bottom: 24px;">
+            <h2>Create a Custom Quiz</h2>
+            <button class="btn btn-outline" id="btn-cancel-create-quiz">Cancel</button>
+        </div>
+        <div class="card" style="margin-bottom: 24px;">
+            <input type="text" id="new-quiz-title" placeholder="Enter Quiz Title (e.g., React Basics)..." style="width: 100%; padding: 16px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-gray); color: var(--text-dark); font-size: 18px; font-weight: 600; margin-bottom: 24px; outline: none;">
+            <div id="quiz-questions-builder" style="display: flex; flex-direction: column; gap: 20px;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+                <button class="btn btn-outline" id="btn-add-question">+ Add Question</button>
+                <button class="btn btn-primary" id="btn-save-quiz">Save to Database</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="quiz-attempt-container" style="display: none;">
+        <div class="panel-head" style="margin-bottom: 24px;">
+            <h2 id="attempt-quiz-title">Quiz Title</h2>
+            <button class="btn btn-outline" id="btn-exit-quiz">Exit Quiz</button>
+        </div>
+        <div class="card" id="quiz-attempt-form" style="display: flex; flex-direction: column; gap: 24px;"></div>
+        <div style="margin-top: 24px; text-align: right;">
+            <button class="btn btn-primary btn-lg" id="btn-submit-quiz">Submit Answers</button>
+        </div>
+    </div>
+
+</div>
+                    
+                    <div id="view-codelab" class="dash-view" style="width: 100%; height: calc(100vh - 140px); display: flex; flex-direction: column;">
+        <div class="panel-head" style="margin-bottom: 16px;">
+            <h2>CodeLab Sandbox</h2>
+            <div style="display: flex; gap: 12px;">
+                <select class="custom-select" disabled title="Currently supporting JavaScript"><option>JavaScript</option></select>
+                <button class="btn btn-primary" id="btn-run-code"><i data-lucide="play" style="width: 16px;"></i> Run Code</button>
+            </div>
+        </div>
+        <div style="display: flex; gap: 24px; flex: 1; overflow: hidden;">
+            <textarea id="codelab-editor" spellcheck="false" style="flex: 1.5; background: #1E1E1E; border: none; border-radius: 12px; padding: 20px; font-family: monospace; color: #DCDCAA; font-size: 15px; resize: none; outline: none; box-shadow: inset 0 2px 10px rgba(0,0,0,0.2); line-height: 1.5;">
+// Write your algorithm here
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+    if (arr[mid] === target) return mid;
+    if (arr[mid] < target) left = mid + 1;
+    else right = mid - 1;
+  }
+  return -1;
+}
+
+const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+console.log("Array:", primes);
+console.log("Searching for 17...");
+
+const result = binarySearch(primes, 17);
+console.log("Found at index:", result);
+</textarea>
+            
+            <div style="flex: 1; background: var(--bg-white); border: 1px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column;">
+                <div style="padding: 16px; border-bottom: 1px solid var(--border-color); font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+                    Console Output
+                    <button class="icon-btn" id="btn-clear-console" style="width: 28px; height: 28px;" title="Clear Console"><i data-lucide="trash-2" style="width: 14px;"></i></button>
+                </div>
+                <div id="codelab-console" style="padding: 16px; font-family: monospace; font-size: 14px; color: var(--text-gray); flex: 1; background: var(--bg-gray); overflow-y: auto; white-space: pre-wrap; line-height: 1.6;">
+                    > Ready to execute...
+                </div>
+            </div>
+        </div>
+    </div>
+                    
+                    <div id="view-flashcards" class="dash-view" style="width: 100%; height: calc(100vh - 100px); display: flex; flex-direction: column;">
+        
+        <div class="panel-head" style="margin-bottom: 24px;">
+            <h2>AI Flashcard Generator</h2>
+            <p class="text-gray" style="font-size: 14px; margin-top: 8px;">Enter a topic, and SAGE will synthesize knowledge from the web into a study deck.</p>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-bottom: 32px;">
+            <input type="text" id="flashcard-topic-input" placeholder="e.g., Quantum Physics, Spanish Conjugations, World War 2..." style="flex: 1; padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-white); font-size: 15px; outline: none; box-shadow: var(--shadow-sm);">
+            <button class="btn btn-primary btn-lg" id="btn-generate-flashcards"><i data-lucide="wand-2" style="width: 18px;"></i> Generate Deck</button>
+        </div>
+
+        <div id="flashcard-workspace" style="display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1;">
+            
+            <div class="flashcard-container" id="active-flashcard" onclick="flipCard()">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <i data-lucide="rotate-cw" style="position: absolute; top: 24px; right: 24px; opacity: 0.5;"></i>
+                        <h3 id="fc-front-text" style="font-size: 28px; font-weight: 600; line-height: 1.4;">Front of Card</h3>
+                        <p style="position: absolute; bottom: 24px; font-size: 13px; opacity: 0.7; font-weight: 500;">(Click anywhere to flip)</p>
+                    </div>
+                    <div class="flashcard-back">
+                        <i data-lucide="rotate-cw" style="position: absolute; top: 24px; right: 24px; color: var(--text-gray); opacity: 0.5;"></i>
+                        <p id="fc-back-text" style="font-size: 20px; font-weight: 500; line-height: 1.6; color: var(--text-dark);">Back of Card</p>
+                        <p style="position: absolute; bottom: 24px; font-size: 13px; color: var(--text-gray); font-weight: 500;">(Click to flip back)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 32px; margin-top: 40px;">
+                <button class="icon-btn floating-ui" id="btn-fc-prev" style="width: 48px; height: 48px; border-radius: 50%;"><i data-lucide="arrow-left"></i></button>
+                <span id="fc-counter" style="font-weight: 700; font-size: 18px; color: var(--text-gray); min-width: 80px; text-align: center;">1 / 5</span>
+                <button class="icon-btn floating-ui" id="btn-fc-next" style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: white; border-color: var(--primary);"><i data-lucide="arrow-right"></i></button>
+            </div>
+        </div>
+
+        <div id="flashcard-loading" style="display: none; flex: 1; align-items: center; justify-content: center; flex-direction: column;">
+            <i data-lucide="loader" class="animate-spin" style="width: 56px; height: 56px; color: var(--primary); margin-bottom: 24px;"></i>
+            <h3 style="font-size: 20px; color: var(--text-dark); margin-bottom: 8px;">Synthesizing Knowledge...</h3>
+            <p class="text-gray">Groq is generating your custom flashcards.</p>
+        </div>
+    </div>
+                    
+                    <div id="view-planner" class="dash-view" style="width: 100%;">
+        <div class="panel-head" style="margin-bottom: 24px;">
+            <h2>Study Planner</h2>
+            <button class="btn btn-primary" id="btn-add-planner-event"><i data-lucide="calendar-plus" style="width: 16px;"></i> Add Event</button>
+        </div>
+        <div style="display: flex; gap: 24px;">
+            
+            <div style="flex: 2; background: var(--bg-white); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px;">
+                <h3 style="margin-bottom: 20px; font-size: 16px; display: flex; justify-content: space-between; align-items: center;">
+                    Upcoming Schedule
+                    <span id="planner-event-count" class="badge-sm" style="background: var(--bg-gray); padding: 4px 8px;">0 Events</span>
+                </h3>
+                
+                <div id="planner-events-container" style="display: flex; flex-direction: column; gap: 16px; min-height: 200px;">
+                    <p class="text-gray" style="font-size: 14px; text-align: center; margin-top: 40px;">Loading your schedule...</p>
+                </div>
+            </div>
+            
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                <div class="card interactive-card" style="padding: 24px; background: linear-gradient(135deg, var(--bg-white) 0%, var(--bg-alt) 100%);">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                        <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center;"><i data-lucide="sparkles" style="width: 16px;"></i></div>
+                        <h3 style="font-size: 15px; color: var(--text-dark);">AI Schedule Optimizer</h3>
+                    </div>
+                    <p style="font-size: 13px; line-height: 1.6; color: var(--text-gray);">Your schedule looks clear. Add some upcoming exams or study sessions, and SAGE will recommend the best times to review your notes based on spaced repetition.</p>
+                    <button class="btn btn-outline btn-sm" style="width: 100%; margin-top: 16px; pointer-events: none; opacity: 0.5;">Awaiting Data...</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+                    
+                    <div id="view-progress" class="dash-view" style="width: 100%;">
+        <div class="panel-head" style="margin-bottom: 24px;">
+            <h2>Detailed Progress Analytics</h2>
+            <div class="badge-sm" style="background: var(--primary-light); color: var(--primary); padding: 6px 12px; border-radius: 20px;"><i data-lucide="trending-up" style="width: 14px; margin-right: 4px; display:inline-block;"></i> Real-time Sync</div>
+        </div>
+        
+        <div class="grid-3" style="margin-bottom: 24px;">
+            <div class="card interactive-card" style="padding: 24px; text-align: center; background: linear-gradient(135deg, var(--bg-white) 0%, var(--bg-alt) 100%);">
+                <h4 class="text-gray" style="font-size: 13px; margin-bottom: 8px;">Total Focus Time</h4>
+                <div style="font-size: 36px; font-weight: 700; color: var(--primary); display: flex; justify-content: center; align-items: baseline; gap: 4px;">
+                    <span id="prog-total-time">0</span><span style="font-size: 16px; color: var(--text-gray); font-weight: 500;">hrs</span>
+                </div>
+            </div>
+            <div class="card interactive-card" style="padding: 24px; text-align: center; background: linear-gradient(135deg, var(--bg-white) 0%, var(--bg-alt) 100%);">
+                <h4 class="text-gray" style="font-size: 13px; margin-bottom: 8px;">Average Accuracy</h4>
+                <div style="font-size: 36px; font-weight: 700; color: #10B981; display: flex; justify-content: center; align-items: baseline; gap: 4px;">
+                    <span id="prog-avg-acc">0</span><span style="font-size: 20px;">%</span>
+                </div>
+            </div>
+            <div class="card interactive-card" style="padding: 24px; text-align: center; background: linear-gradient(135deg, var(--bg-white) 0%, var(--bg-alt) 100%);">
+                <h4 class="text-gray" style="font-size: 13px; margin-bottom: 8px;">Quizzes Mastered</h4>
+                <div style="font-size: 36px; font-weight: 700; color: #8B5CF6;" id="prog-topics">0</div>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 24px; background: var(--bg-white);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 16px; color: var(--text-dark);">Study Hours (Last 7 Days)</h3>
+            </div>
+            <div style="position: relative; height: 350px; width: 100%;">
+                <canvas id="progressChart"></canvas>
+            </div>
+        </div>
+    </div>
+                    
+                    <div id="view-leaderboard" class="dash-view" style="width: 100%; max-width: 1400px; margin: 0 auto;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+            <div>
+                <h2>Leaderboard</h2>
+                <p class="text-gray" style="font-size: 14px; margin-top: 4px;">Compete, learn, and climb to the top!</p>
+            </div>
+            <select class="custom-select" style="padding: 8px 16px;"><option>This Week</option><option>All Time</option></select>
+        </div>
+
+        <div class="leaderboard-layout">
+            
+            <div class="lb-main">
+                
+                <div style="display: flex; gap: 24px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px;">
+                    <div style="padding-bottom: 12px; color: var(--primary); border-bottom: 2px solid var(--primary); font-weight: 600; font-size: 14px; cursor: pointer;">Global</div>
+                    <div class="text-gray" style="padding-bottom: 12px; font-weight: 500; font-size: 14px; cursor: pointer;">Friends</div>
+                    <div class="text-gray" style="padding-bottom: 12px; font-weight: 500; font-size: 14px; cursor: pointer;">College</div>
+                </div>
+
+                <div class="podium-container" id="lb-podium-container">
+                    <p class="text-gray" style="padding: 40px;">Generating Podium...</p>
+                </div>
+
+                <div class="card" style="padding: 0; overflow: hidden; margin-top: 16px;">
+                    <div class="lb-list-header">
+                        <div>Rank</div><div>User</div><div>XP</div><div>Level</div><div>Study Time</div><div>Quizzes</div><div>Streak</div>
+                    </div>
+                    
+                    <div id="lb-list-container"></div>
+                    
+                    <div id="lb-my-rank-container"></div>
+                </div>
+            </div>
+
+            <div class="lb-sidebar">
+                
+                <div class="card" style="padding: 24px;">
+                    <h3 style="font-size: 16px; margin-bottom: 20px;">Your Statistics</h3>
+                    <div class="stat-grid-2x2">
+                        <div class="stat-mini-card">
+                            <div class="stat-mini-icon" style="background: #ECFDF5; color: #10B981;"><i data-lucide="trophy" style="width: 18px;"></i></div>
+                            <div>
+                                <div class="text-gray" style="font-size: 11px; margin-bottom: 2px;">Your Rank</div>
+                                <div style="font-weight: 700; font-size: 15px; color: var(--text-dark);" id="sb-my-rank">--</div>
+                            </div>
+                        </div>
+                        <div class="stat-mini-card">
+                            <div class="stat-mini-icon" style="background: #FFFBEB; color: #F59E0B;"><i data-lucide="zap" style="width: 18px;"></i></div>
+                            <div>
+                                <div class="text-gray" style="font-size: 11px; margin-bottom: 2px;">Total XP</div>
+                                <div style="font-weight: 700; font-size: 15px; color: var(--text-dark);" id="sb-my-xp">--</div>
+                            </div>
+                        </div>
+                        <div class="stat-mini-card">
+                            <div class="stat-mini-icon" style="background: #F5F3FF; color: #8B5CF6;"><i data-lucide="bar-chart" style="width: 18px;"></i></div>
+                            <div>
+                                <div class="text-gray" style="font-size: 11px; margin-bottom: 2px;">Level</div>
+                                <div style="font-weight: 700; font-size: 15px; color: var(--text-dark);" id="sb-my-lvl">--</div>
+                            </div>
+                        </div>
+                        <div class="stat-mini-card">
+                            <div class="stat-mini-icon" style="background: #FEF2F2; color: #EF4444;"><i data-lucide="flame" style="width: 18px;"></i></div>
+                            <div>
+                                <div class="text-gray" style="font-size: 11px; margin-bottom: 2px;">Best Streak</div>
+                                <div style="font-weight: 700; font-size: 15px; color: var(--text-dark);" id="sb-my-streak">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 24px;">
+                    <h3 style="font-size: 16px; margin-bottom: 20px;">Leaderboard Filters</h3>
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div>
+                            <label style="font-size: 12px; color: var(--text-gray); margin-bottom: 6px; display:block;">Time Period</label>
+                            <select class="custom-select" style="width: 100%; padding: 10px;"><option>This Week</option><option>All Time</option></select>
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; color: var(--text-gray); margin-bottom: 6px; display:block;">Category</label>
+                            <select class="custom-select" style="width: 100%; padding: 10px;"><option>All Subjects</option><option>Coding</option><option>Science</option></select>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 8px;"><i data-lucide="filter" style="width: 16px;"></i> Apply Filters</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+                    
+                    <div id="view-achievements" class="dash-view" style="width: 100%; max-width: 1400px; margin: 0 auto;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+        <div>
+            <h2 style="display: flex; align-items: center; gap: 12px;">
+                <i data-lucide="medal" style="width: 28px; height: 28px; color: var(--text-dark);"></i> Achievements
+            </h2>
+            <p class="text-gray" style="font-size: 14px; margin-top: 4px;">Celebrate your milestones and keep growing!</p>
+        </div>
+        <button class="btn btn-outline btn-sm"><i data-lucide="share" style="width: 14px;"></i> Share Profile</button>
+    </div>
+
+    <div style="display: flex; gap: 24px; border-bottom: 1px solid var(--border-color); margin-bottom: 24px;">
+        <div style="padding-bottom: 12px; color: var(--primary); border-bottom: 2px solid var(--primary); font-weight: 600; font-size: 14px; cursor: pointer;">Overview</div>
+        <div class="text-gray" style="padding-bottom: 12px; font-weight: 500; font-size: 14px; cursor: pointer;">Badges</div>
+        <div class="text-gray" style="padding-bottom: 12px; font-weight: 500; font-size: 14px; cursor: pointer;">Milestones</div>
+        <div class="text-gray" style="padding-bottom: 12px; font-weight: 500; font-size: 14px; cursor: pointer;">Challenges</div>
+    </div>
+
+    <div class="achievements-layout">
+        <div class="ach-main">
+            
+            <div class="ach-stats-grid">
+                <div class="card ach-stat-card gs-ach-anim">
+                    <div class="ach-stat-icon" style="color: #8B5CF6; background: #F5F3FF;"><i data-lucide="award"></i></div>
+                    <div class="ach-stat-info">
+                        <span class="label">Total Achievements</span>
+                        <span class="val" id="ach-total-unlocked">0</span>
+                        <span class="trend" style="color: var(--primary);">+2 this week</span>
+                    </div>
+                </div>
+                <div class="card ach-stat-card gs-ach-anim">
+                    <div class="ach-stat-icon" style="color: #F59E0B; background: #FFFBEB;"><i data-lucide="star"></i></div>
+                    <div class="ach-stat-info">
+                        <span class="label">XP Earned</span>
+                        <span class="val" id="ach-total-xp">0</span>
+                        <span class="trend" style="color: #F59E0B;">Active</span>
+                    </div>
+                </div>
+                <div class="card ach-stat-card gs-ach-anim">
+                    <div class="ach-stat-icon" style="color: #10B981; background: #ECFDF5;"><i data-lucide="target"></i></div>
+                    <div class="ach-stat-info">
+                        <span class="label">Quizzes Completed</span>
+                        <span class="val" id="ach-quizzes">0</span>
+                        <span class="trend" style="color: #10B981;">Keep going!</span>
+                    </div>
+                </div>
+                <div class="card ach-stat-card gs-ach-anim">
+                    <div class="ach-stat-icon" style="color: #EF4444; background: #FEF2F2;"><i data-lucide="flame"></i></div>
+                    <div class="ach-stat-info">
+                        <span class="label">Longest Streak</span>
+                        <span class="val"><span id="ach-max-streak">0</span> <span style="font-size: 12px; font-weight: 500; color: var(--text-gray);">days</span></span>
+                        <span class="trend" style="color: #EF4444;">On fire!</span>
+                    </div>
+                </div>
+                <div class="card ach-stat-card gs-ach-anim">
+                    <div class="ach-stat-icon" style="color: #3B82F6; background: #EFF6FF;"><i data-lucide="gem"></i></div>
+                    <div class="ach-stat-info">
+                        <span class="label">Rarity Score</span>
+                        <span class="val" id="ach-rarity">85%</span>
+                        <span class="trend" style="color: #3B82F6;">Top 15% of users</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0;">
+                <h3 style="font-size: 16px; color: var(--text-dark);">Achievement Categories</h3>
+                <a href="#" style="font-size: 13px; font-weight: 500; color: var(--primary); text-decoration: none;">View All</a>
+            </div>
+            
+            <div class="ach-cat-grid">
+                <div class="card ach-cat-card gs-ach-anim">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div class="ach-cat-icon" style="color: #3B82F6; background: #EFF6FF;"><i data-lucide="book-open"></i></div>
+                        <div><h4 style="font-size: 14px; color: var(--text-dark);">Learning</h4><p style="font-size: 11px; color: var(--text-gray);"><span id="cat-learn-val">0</span> / 12</p></div>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="cat-learn-bar" style="width: 0%; background: #3B82F6;"></div></div>
+                </div>
+                <div class="card ach-cat-card gs-ach-anim">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div class="ach-cat-icon" style="color: #8B5CF6; background: #F5F3FF;"><i data-lucide="help-circle"></i></div>
+                        <div><h4 style="font-size: 14px; color: var(--text-dark);">Quizzes</h4><p style="font-size: 11px; color: var(--text-gray);"><span id="cat-quiz-val">0</span> / 10</p></div>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="cat-quiz-bar" style="width: 0%; background: #8B5CF6;"></div></div>
+                </div>
+                <div class="card ach-cat-card gs-ach-anim">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div class="ach-cat-icon" style="color: #10B981; background: #ECFDF5;"><i data-lucide="calendar"></i></div>
+                        <div><h4 style="font-size: 14px; color: var(--text-dark);">Consistency</h4><p style="font-size: 11px; color: var(--text-gray);"><span id="cat-cons-val">0</span> / 10</p></div>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="cat-cons-bar" style="width: 0%; background: #10B981;"></div></div>
+                </div>
+                <div class="card ach-cat-card gs-ach-anim">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div class="ach-cat-icon" style="color: #F59E0B; background: #FFFBEB;"><i data-lucide="zap"></i></div>
+                        <div><h4 style="font-size: 14px; color: var(--text-dark);">Productivity</h4><p style="font-size: 11px; color: var(--text-gray);"><span id="cat-prod-val">0</span> / 8</p></div>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="cat-prod-bar" style="width: 0%; background: #F59E0B;"></div></div>
+                </div>
+                <div class="card ach-cat-card gs-ach-anim">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div class="ach-cat-icon" style="color: #8B5CF6; background: #F5F3FF;"><i data-lucide="gem"></i></div>
+                        <div><h4 style="font-size: 14px; color: var(--text-dark);">Special</h4><p style="font-size: 11px; color: var(--text-gray);"><span id="cat-spec-val">0</span> / 6</p></div>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="cat-spec-bar" style="width: 0%; background: #8B5CF6;"></div></div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 16px; color: var(--text-dark); margin: 16px 0;">Recent Achievements</h3>
+            <div class="card" style="padding: 0; overflow: hidden;" id="ach-recent-list">
+                <div style="padding: 40px; text-align: center; color: var(--text-gray);">
+                    <i data-lucide="loader" class="animate-spin" style="margin-bottom: 12px; color: var(--primary);"></i>
+                    <p>Syncing with database...</p>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="ach-sidebar">
+            
+            <div class="card gs-ach-anim" style="padding: 24px;">
+                <h3 style="font-size: 15px; margin-bottom: 24px; color: var(--text-dark);">Achievement Progress</h3>
+                <div style="display: flex; align-items: center; gap: 24px;">
+                    <div style="position: relative; width: 110px; height: 110px;">
+                        <canvas id="achievementsDonut"></canvas>
+                        <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <span style="font-size: 24px; font-weight: 700; color: var(--text-dark);">46</span>
+                            <span style="font-size: 11px; color: var(--text-gray); font-weight: 500;">Total</span>
+                        </div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                            <span style="display: flex; align-items: center; gap: 6px;"><span class="dot" style="width: 8px; height: 8px; background: #10B981; border-radius: 50%;"></span> Completed</span>
+                            <span style="font-weight: 600;" id="ach-don-comp">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                            <span style="display: flex; align-items: center; gap: 6px;"><span class="dot" style="width: 8px; height: 8px; background: #3B82F6; border-radius: 50%;"></span> In Progress</span>
+                            <span style="font-weight: 600;" id="ach-don-prog">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                            <span style="display: flex; align-items: center; gap: 6px;"><span class="dot" style="width: 8px; height: 8px; background: #EF4444; border-radius: 50%;"></span> Locked</span>
+                            <span style="font-weight: 600;" id="ach-don-lock">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 24px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; font-weight: 500;">
+                        <span class="text-gray">Overall Completion</span>
+                        <span style="color: var(--text-dark);" id="ach-overall-pct">0%</span>
+                    </div>
+                    <div class="progress-bar-bg" style="height: 6px;"><div class="progress-bar-fill" id="ach-overall-bar" style="width: 0%; background: var(--primary);"></div></div>
+                </div>
+            </div>
+
+            <div class="card gs-ach-anim" style="padding: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="font-size: 15px; color: var(--text-dark);">Rarest Achievements</h3>
+                    <a href="#" style="font-size: 12px; font-weight: 500; color: var(--primary); text-decoration: none;">View All</a>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="ach-cat-icon" style="color: #8B5CF6; background: #F5F3FF; border-radius: 8px;"><i data-lucide="shield"></i></div>
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 13px; color: var(--text-dark); margin-bottom: 2px;">Perfectionist</h4>
+                            <p style="font-size: 11px; color: var(--text-gray);">Score 100% in 5 quizzes</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="badge-sm" style="background: rgba(139,92,246,0.1); color: #8B5CF6; border: none;">Epic</span>
+                            <p style="font-size: 10px; color: var(--text-gray); margin-top: 4px;">0.8%</p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="ach-cat-icon" style="color: #F59E0B; background: #FFFBEB; border-radius: 8px;"><i data-lucide="moon"></i></div>
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 13px; color: var(--text-dark); margin-bottom: 2px;">Night Owl</h4>
+                            <p style="font-size: 11px; color: var(--text-gray);">Study between 12 AM - 5 AM</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="badge-sm" style="background: rgba(245,158,11,0.1); color: #F59E0B; border: none;">Legendary</span>
+                            <p style="font-size: 10px; color: var(--text-gray); margin-top: 4px;">1.2%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card gs-ach-anim" style="padding: 24px;">
+                <h3 style="font-size: 15px; margin-bottom: 20px; color: var(--text-dark);">Next Milestone</h3>
+                <div style="background: var(--primary-light); border: 1px solid #BFDBFE; border-radius: 16px; padding: 20px;">
+                    <div style="display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px;">
+                        <div style="width: 48px; height: 48px; background: var(--primary); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0;">
+                            <i data-lucide="star" style="width: 20px; height: 20px; fill: white;"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 14px; color: var(--text-dark); margin-bottom: 4px;" id="next-ms-title">Dedicated Learner</h4>
+                            <p style="font-size: 12px; color: var(--text-gray); line-height: 1.4;" id="next-ms-desc">Study for 14 days in a row</p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--primary); margin-bottom: 8px;">
+                        <span id="next-ms-val">0 / 14 days</span>
+                    </div>
+                    <div class="progress-bar-bg" style="height: 6px;"><div class="progress-bar-fill" id="next-ms-bar" style="width: 0%; background: var(--primary);"></div></div>
+                    
+                    <div style="display: flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 12px; font-weight: 500; color: var(--primary);">
+                        <i data-lucide="gift" style="width: 14px;"></i> Reward: 1,000 XP
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+        <!-- ========================================= -->
+                    <!-- ADD THE NEW ZEN MODE VIEW HERE            -->
+                    <!-- ========================================= -->
+                    <div id="view-focus" class="dash-view" style="width: 100%;">
+                        <div class="panel-head">
+                            <div>
+                                <h2>Zen Mode AI</h2>
+                                <p class="text-gray">AI is monitoring your posture and distractions in real-time.</p>
+                            </div>
+                            <div id="ai-status-tag" class="badge-sm" style="background: #FEF2F2; color: #EF4444;">
+                                <i data-lucide="eye-off" style="width: 14px; margin-right: 4px;"></i> Camera Off
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; margin-top: 24px;">
+                            <!-- Left: Webcam Feed -->
+                            <div class="card" style="padding: 12px; background: #000; position: relative; overflow: hidden; height: 480px; display: flex; align-items: center; justify-content: center;">
+                                <video id="webcam" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px; transform: scaleX(-1);"></video>
+                                <canvas id="canvas-overlay" style="position: absolute; top: 12px; left: 12px; width: calc(100% - 24px); height: calc(100% - 24px); pointer-events: none; transform: scaleX(-1);"></canvas>
+                                
+                                <div id="focus-warning" style="position: absolute; inset: 0; background: rgba(239, 68, 68, 0.4); display: none; align-items: center; justify-content: center; z-index: 10;">
+                                    <div class="badge-lg" style="background: #EF4444; color: white; padding: 20px 40px; border-radius: 16px; font-weight: 800; font-size: 24px; animation: pulse 1s infinite;">
+                                        DISTRACTION DETECTED!
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Stats & Controls -->
+                            <div style="display: flex; flex-direction: column; gap: 20px;">
+                                <div class="card interactive-card">
+                                    <h3>Monitor Controls</h3>
+                                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                                        <button class="btn btn-primary btn-full" id="btn-start-monitor">Start AI Monitor</button>
+                                        <button class="btn btn-outline" id="btn-stop-monitor">Stop</button>
+                                    </div>
+                                </div>
+
+                                <div class="stats-row" style="grid-template-columns: 1fr; gap: 16px;">
+                                    <div class="s-card">
+                                        <div class="s-card-header"><i data-lucide="user-check"></i> Posture Score</div>
+                                        <h2 id="posture-status">--</h2>
+                                        <div class="progress-bar-bg"><div id="posture-bar" class="progress-bar-fill" style="width: 0%; background: #10B981;"></div></div>
+                                    </div>
+                                    <div class="s-card">
+                                        <div class="s-card-header"><i data-lucide="smartphone"></i> Phone Detection</div>
+                                        <h2 id="phone-status">Inactive</h2>
+                                        <p id="phone-meta" class="text-gray">No devices detected</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                    <div id="view-deepwork" class="dash-view" style="width: 100%;">
+    <div class="panel-head" style="margin-bottom: 24px;">
+        <div>
+            <h2>Deep Work Zone</h2>
+            <p class="text-gray">Focus deeply with Pomodoro techniques and ambient sounds.</p>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px;">
+        
+        <div class="card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; background: linear-gradient(135deg, var(--bg-white) 0%, var(--bg-alt) 100%); position: relative; overflow: hidden;">
+            
+            <div class="segmented-control" style="margin-bottom: 40px; z-index: 10;">
+                <button class="segment-btn active pomo-mode-btn" data-time="25" data-mode="Pomodoro">Pomodoro (25m)</button>
+                <button class="segment-btn pomo-mode-btn" data-time="5" data-mode="Short Break">Short Break (5m)</button>
+                <button class="segment-btn pomo-mode-btn" data-time="15" data-mode="Long Break">Long Break (15m)</button>
+            </div>
+
+            <div style="position: relative; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center; margin-bottom: 40px;">
+                <svg class="progress-ring" width="280" height="280" style="position: absolute; transform: rotate(-90deg);">
+                    <circle class="progress-ring-bg" stroke="var(--border-color)" stroke-width="12" fill="transparent" r="130" cx="140" cy="140"/>
+                    <circle class="progress-ring-circle" id="pomo-svg-circle" stroke="var(--primary)" stroke-width="12" fill="transparent" r="130" cx="140" cy="140" stroke-linecap="round" style="transition: stroke-dashoffset 1s linear;"/>
+                </svg>
+                <div style="text-align: center; z-index: 10;">
+                    <h1 id="pomo-time-display" style="font-size: 64px; font-weight: 800; color: var(--text-dark); font-variant-numeric: tabular-nums; line-height: 1;">25:00</h1>
+                    <p id="pomo-status-text" class="text-primary" style="font-weight: 600; margin-top: 8px;">Ready to focus?</p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 16px; z-index: 10;">
+                <button class="btn btn-primary btn-lg" id="btn-pomo-start" style="width: 140px; border-radius: 100px;"><i data-lucide="play"></i> Start</button>
+                <button class="btn btn-outline btn-lg" id="btn-pomo-reset" style="border-radius: 100px; width: 60px; padding: 0;"><i data-lucide="rotate-ccw"></i></button>
+            </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            
+            <div class="card">
+                <h3 style="font-size: 16px; margin-bottom: 16px;">Ambient Sounds</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="interactive-card ambient-sound-card" data-sound="rain" style="border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: 0.3s;">
+                        <i data-lucide="cloud-rain" style="width: 28px; height: 28px; color: #3B82F6; margin-bottom: 8px;"></i>
+                        <h4 style="font-size: 13px;">Rain</h4>
+                    </div>
+                    <div class="interactive-card ambient-sound-card" data-sound="forest" style="border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: 0.3s;">
+                        <i data-lucide="tree-pine" style="width: 28px; height: 28px; color: #10B981; margin-bottom: 8px;"></i>
+                        <h4 style="font-size: 13px;">Forest</h4>
+                    </div>
+                    <div class="interactive-card ambient-sound-card" data-sound="cafe" style="border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: 0.3s;">
+                        <i data-lucide="coffee" style="width: 28px; height: 28px; color: #F59E0B; margin-bottom: 8px;"></i>
+                        <h4 style="font-size: 13px;">Cafe</h4>
+                    </div>
+                    <div class="interactive-card ambient-sound-card" data-sound="waves" style="border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: 0.3s;">
+                        <i data-lucide="waves" style="width: 28px; height: 28px; color: #0EA5E9; margin-bottom: 8px;"></i>
+                        <h4 style="font-size: 13px;">Waves</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="flex: 1;">
+                <h3 style="font-size: 16px; margin-bottom: 16px;">Today's Deep Work</h3>
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div style="background: var(--bg-gray); padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 14px; font-weight: 500; color: var(--text-gray);">Sessions Completed</span>
+                        <span id="pomo-stat-sessions" style="font-size: 20px; font-weight: 700; color: var(--text-dark);">0</span>
+                    </div>
+                    <div style="background: var(--bg-gray); padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 14px; font-weight: 500; color: var(--text-gray);">Focus Time</span>
+                        <span id="pomo-stat-minutes" style="font-size: 20px; font-weight: 700; color: var(--primary);">0 min</span>
+                    </div>
+                    <p style="font-size: 12px; color: var(--text-gray); text-align: center; margin-top: auto;">Data automatically syncs to your progress charts upon session completion.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+                    <div id="view-youtube" class="dash-view" style="width: 100%; height: calc(100vh - 140px); display: flex; flex-direction: column;">
+    <div class="panel-head" style="margin-bottom: 24px;">
+        <div>
+            <h2 style="display: flex; align-items: center; gap: 12px;">
+                <i data-lucide="youtube" style="color: #EF4444; width: 28px; height: 28px; fill: rgba(239,68,68,0.2);"></i> 
+                AI Video Hub
+            </h2>
+            <p class="text-gray" style="font-size: 14px; margin-top: 4px;">Find top lectures and extract key takeaways instantly.</p>
+        </div>
+        <div style="display: flex; gap: 12px; width: 400px;">
+            <div class="search-box" style="flex: 1; width: auto;">
+                <i data-lucide="search"></i>
+                <input type="text" id="yt-topic-input" placeholder="What are you studying? (e.g., Quantum Mechanics)">
+            </div>
+            <button class="btn btn-primary" id="btn-search-yt">Discover</button>
+        </div>
+    </div>
+
+    <div id="yt-recommendations" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; overflow-y: auto; padding-bottom: 24px;">
+        <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-gray); background: var(--bg-white); border-radius: 16px; border: 1px dashed var(--border-color);">
+            <i data-lucide="video" style="width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+            <h3>Enter a topic to get AI-curated video recommendations</h3>
+        </div>
+    </div>
+
+    <div id="yt-workspace" style="display: none; gap: 24px; flex: 1; overflow: hidden;">
+        <div style="flex: 1.5; display: flex; flex-direction: column; gap: 16px;">
+            <button class="btn btn-outline btn-sm" id="btn-close-yt-workspace" style="align-self: flex-start;">
+                <i data-lucide="arrow-left" style="width: 14px;"></i> Back to Recommendations
+            </button>
+            <div class="card" style="padding: 0; overflow: hidden; background: #000; border-radius: 16px; flex: 1; min-height: 300px; position: relative;">
+                <iframe id="yt-player" width="100%" height="100%" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; inset: 0;"></iframe>
+            </div>
+        </div>
+
+        <div class="card" style="flex: 1; display: flex; flex-direction: column; background: linear-gradient(135deg, var(--bg-white) 0%, var(--primary-light) 100%); border: 1px solid #BFDBFE;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+                <h3 style="display: flex; align-items: center; gap: 8px; font-size: 16px; color: var(--primary);">
+                    <i data-lucide="sparkles" style="width: 18px;"></i> AI Summary
+                </h3>
+                <button class="btn btn-primary btn-sm" id="btn-save-summary"><i data-lucide="save" style="width: 14px;"></i> Save as Note</button>
+            </div>
+            
+            <div id="yt-summary-content" style="flex: 1; overflow-y: auto; font-size: 14px; line-height: 1.7; color: var(--text-dark); padding-right: 8px;">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-gray); text-align: center;">
+                    <i data-lucide="bot" class="animate-pulse" style="width: 40px; height: 40px; color: var(--primary); margin-bottom: 16px;"></i>
+                    <p>SAGE is watching the video and generating your summary...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+                    <div id="view-settings" class="dash-view" style="width: 100%; max-width: 1200px; margin: 0 auto;">
+        
+        <div style="margin-bottom: 24px;">
+            <h2 style="display: flex; align-items: center; gap: 12px;"><i data-lucide="settings" style="width: 24px; height: 24px;"></i> Settings</h2>
+            <p class="text-gray" style="font-size: 14px; margin-top: 4px;">Personalize your experience and manage your preferences</p>
+        </div>
+
+        <div style="display: flex; gap: 24px; border-bottom: 1px solid var(--border-color); margin-bottom: 24px; overflow-x: auto;">
+            <div style="padding-bottom: 12px; color: var(--primary); border-bottom: 2px solid var(--primary); font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap;">General</div>
+            <div class="text-gray" style="padding-bottom: 12px; font-weight: 500; font-size: 14px; cursor: pointer; white-space: nowrap;">Account</div>
+            <div class="text-gray" style="padding-bottom: 12px; font-weight: 500; font-size: 14px; cursor: pointer; white-space: nowrap;">Preferences</div>
+            <div class="text-gray" style="padding-bottom: 12px; font-weight: 500; font-size: 14px; cursor: pointer; white-space: nowrap;">Notifications</div>
+            <div class="text-gray" style="padding-bottom: 12px; font-weight: 500; font-size: 14px; cursor: pointer; white-space: nowrap;">Privacy & Security</div>
+            <div class="text-gray" style="padding-bottom: 12px; font-weight: 500; font-size: 14px; cursor: pointer; white-space: nowrap;">Billing</div>
+        </div>
+
+        <div class="settings-layout">
+            <div class="settings-main">
+                
+                <div>
+                    <h3 class="setting-group-title">General Settings</h3>
+                    <div class="card" style="padding: 0 24px;">
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon-box" style="color: #3B82F6; background: #EFF6FF;"><i data-lucide="user" style="width: 18px;"></i></div>
+                                <div class="setting-text"><h4>Language</h4><p>Choose your preferred language</p></div>
+                            </div>
+                            <select class="custom-select db-setting" data-key="language" style="width: 160px; padding: 10px;"><option value="en">English (US)</option><option value="es">Spanish</option><option value="fr">French</option></select>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon-box" style="color: #8B5CF6; background: #F5F3FF;"><i data-lucide="palette" style="width: 18px;"></i></div>
+                                <div class="setting-text"><h4>Appearance</h4><p>Customize how SAGE looks for you</p></div>
+                            </div>
+                            <div class="segmented-control theme-segment">
+                                <button class="segment-btn active db-setting-btn" data-key="theme" data-val="light"><i data-lucide="sun" style="width: 14px;"></i> Light</button>
+                                <button class="segment-btn db-setting-btn" data-key="theme" data-val="dark"><i data-lucide="moon" style="width: 14px;"></i> Dark</button>
+                                <button class="segment-btn db-setting-btn" data-key="theme" data-val="system"><i data-lucide="monitor" style="width: 14px;"></i> System</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon-box" style="color: #10B981; background: #ECFDF5;"><i data-lucide="type" style="width: 18px;"></i></div>
+                                <div class="setting-text"><h4>Font Size</h4><p>Adjust the text size across the platform</p></div>
+                            </div>
+                            <div class="segmented-control">
+                                <button class="segment-btn db-setting-btn" data-key="fontSize" data-val="small">A-</button>
+                                <button class="segment-btn active db-setting-btn" data-key="fontSize" data-val="medium">Medium</button>
+                                <button class="segment-btn db-setting-btn" data-key="fontSize" data-val="large">A+</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon-box" style="color: #F59E0B; background: #FFFBEB;"><i data-lucide="clock" style="width: 18px;"></i></div>
+                                <div class="setting-text"><h4>Timezone</h4><p>Set your current timezone</p></div>
+                            </div>
+                            <select class="custom-select db-setting" data-key="timezone" style="width: 200px; padding: 10px;"><option value="IST">(GMT+05:30) Asia/Kolkata</option><option value="EST">(GMT-05:00) Eastern Time</option></select>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon-box" style="color: #EF4444; background: #FEF2F2;"><i data-lucide="calendar" style="width: 18px;"></i></div>
+                                <div class="setting-text"><h4>Week Starts On</h4><p>Choose the first day of the week</p></div>
+                            </div>
+                            <select class="custom-select db-setting" data-key="weekStart" style="width: 160px; padding: 10px;"><option value="monday">Monday</option><option value="sunday">Sunday</option></select>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon-box" style="color: #8B5CF6; background: #F5F3FF;"><i data-lucide="brain" style="width: 18px;"></i></div>
+                                <div class="setting-text"><h4>Default Study Mode</h4><p>Select your default mode when starting a session</p></div>
+                            </div>
+                            <div class="segmented-control">
+                                <button class="segment-btn db-setting-btn" data-key="studyMode" data-val="focus">Focus</button>
+                                <button class="segment-btn active db-setting-btn" data-key="studyMode" data-val="balanced">Balanced</button>
+                                <button class="segment-btn db-setting-btn" data-key="studyMode" data-val="deep">Deep Work</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="setting-group-title">Quick Settings</h3>
+                    <div class="card" style="padding: 0 24px;">
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon-box" style="color: #10B981; background: #ECFDF5; border: none;"><i data-lucide="bell" style="width: 18px;"></i></div>
+                                <div class="setting-text"><h4>Enable Sounds</h4><p>Play sounds for notifications and interactions</p></div>
+                            </div>
+                            <label class="toggle-switch"><input type="checkbox" class="db-setting-toggle" data-key="sounds" checked><span class="toggle-slider"></span></label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon-box" style="color: #8B5CF6; background: #F5F3FF; border: none;"><i data-lucide="moon" style="width: 18px;"></i></div>
+                                <div class="setting-text"><h4>Night Mode Schedule</h4><p>Automatically switch to dark mode at night</p></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; color: var(--text-gray); font-size: 13px; font-weight: 500;">
+                                10:00 PM - 6:00 AM <i data-lucide="chevron-right" style="width: 14px;"></i>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon-box" style="color: #F59E0B; background: #FFFBEB; border: none;"><i data-lucide="clock" style="width: 18px;"></i></div>
+                                <div class="setting-text"><h4>Study Reminders</h4><p>Get reminded to study and stay consistent</p></div>
+                            </div>
+                            <label class="toggle-switch"><input type="checkbox" class="db-setting-toggle" data-key="reminders" checked><span class="toggle-slider"></span></label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon-box" style="color: #3B82F6; background: #EFF6FF; border: none;"><i data-lucide="bar-chart-2" style="width: 18px;"></i></div>
+                                <div class="setting-text"><h4>Show Study Streak</h4><p>Display your streak on the dashboard</p></div>
+                            </div>
+                            <label class="toggle-switch"><input type="checkbox" class="db-setting-toggle" data-key="showStreak" checked><span class="toggle-slider"></span></label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon-box" style="color: #EF4444; background: #FEF2F2; border: none;"><i data-lucide="eye-off" style="width: 18px;"></i></div>
+                                <div class="setting-text"><h4>Disable Animations</h4><p>Reduce motion for a smoother experience</p></div>
+                            </div>
+                            <label class="toggle-switch"><input type="checkbox" class="db-setting-toggle" data-key="reduceMotion"><span class="toggle-slider"></span></label>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="settings-sidebar">
+                
+                <div class="card" style="padding: 24px;">
+                    <h3 style="font-size: 15px; margin-bottom: 16px;">Account Summary</h3>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="avatar" id="settings-avatar" style="width: 48px; height: 48px; font-size: 16px;">?</div>
+                            <div>
+                                <h4 style="font-size: 15px;" id="settings-name">Loading...</h4>
+                                <p class="text-gray" style="font-size: 12px;" id="settings-email">Loading...</p>
+                            </div>
+                        </div>
+                        <span class="badge-sm" style="background: #EFF6FF; color: #3B82F6; border: none; font-weight: 600;">Pro Plan</span>
+                    </div>
+
+                    <div class="sidebar-list-item">
+                        <span class="text-gray"><i data-lucide="calendar" style="width: 14px; display: inline-block; margin-right: 6px;"></i> Member Since</span>
+                        <span style="font-weight: 500;">Jan 15, 2024 <i data-lucide="chevron-right" style="width: 12px; opacity: 0.5;"></i></span>
+                    </div>
+                    <div class="sidebar-list-item">
+                        <span class="text-gray"><i data-lucide="credit-card" style="width: 14px; display: inline-block; margin-right: 6px;"></i> Plan</span>
+                        <span style="font-weight: 500;">Pro (Yearly) <i data-lucide="chevron-right" style="width: 12px; opacity: 0.5;"></i></span>
+                    </div>
+                    <div class="sidebar-list-item" style="border-bottom: none;">
+                        <span class="text-gray"><i data-lucide="calendar-clock" style="width: 14px; display: inline-block; margin-right: 6px;"></i> Next Billing</span>
+                        <span style="font-weight: 500;">Jan 15, 2025 <i data-lucide="chevron-right" style="width: 12px; opacity: 0.5;"></i></span>
+                    </div>
+                    
+                    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; margin-bottom: 8px;">
+                            <span class="text-gray"><i data-lucide="cloud" style="width: 14px; display: inline-block; margin-right: 6px;"></i> Storage Used</span>
+                            <span>2.4 GB / 10 GB</span>
+                        </div>
+                        <div class="progress-bar-bg" style="height: 4px;"><div class="progress-bar-fill" style="width: 24%; background: var(--primary);"></div></div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 24px;">
+                    <h3 style="font-size: 15px; margin-bottom: 4px;">Theme Preview</h3>
+                    <p class="text-gray" style="font-size: 12px;">See how the platform looks in different themes</p>
+                    
+                    <div class="theme-preview-grid">
+                        <div class="theme-box theme-box-light active db-setting-btn" data-key="theme" data-val="light">
+                            <div class="theme-mockup">
+                                <div class="theme-line" style="width: 40%; color: #94A3B8;"></div>
+                                <div class="theme-line" style="width: 80%; color: #3B82F6;"></div>
+                                <div class="theme-line" style="width: 60%; color: #94A3B8;"></div>
+                            </div>
+                            <span>Light</span>
+                        </div>
+                        <div class="theme-box theme-box-dark db-setting-btn" data-key="theme" data-val="dark">
+                            <div class="theme-mockup">
+                                <div class="theme-line" style="width: 40%; color: #64748B;"></div>
+                                <div class="theme-line" style="width: 80%; color: #818CF8;"></div>
+                                <div class="theme-line" style="width: 60%; color: #64748B;"></div>
+                            </div>
+                            <span>Dark</span>
+                        </div>
+                        <div class="theme-box theme-box-system db-setting-btn" data-key="theme" data-val="system">
+                            <div class="theme-mockup">
+                                <div class="theme-line" style="width: 40%; color: #94A3B8;"></div>
+                                <div class="theme-line" style="width: 80%; color: #3B82F6;"></div>
+                                <div class="theme-line" style="width: 60%; color: #94A3B8;"></div>
+                            </div>
+                            <span>System</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 24px;">
+                    <h3 style="font-size: 15px; margin-bottom: 16px;">Data & Support</h3>
+                    
+                    <a href="#" class="sidebar-link">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><i data-lucide="download" style="width: 16px; color: var(--text-gray);"></i> Export My Data</div>
+                            <div class="text-gray" style="font-size: 11px; margin-left: 24px; font-weight: 400;">Download all your data and content</div>
+                        </div>
+                        <i data-lucide="chevron-right" style="width: 16px; opacity: 0.5;"></i>
+                    </a>
+                    
+                    <a href="#" class="sidebar-link">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><i data-lucide="upload" style="width: 16px; color: var(--text-gray);"></i> Import Data</div>
+                            <div class="text-gray" style="font-size: 11px; margin-left: 24px; font-weight: 400;">Import notes, flashcards, and more</div>
+                        </div>
+                        <i data-lucide="chevron-right" style="width: 16px; opacity: 0.5;"></i>
+                    </a>
+
+                    <a href="#" class="sidebar-link">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><i data-lucide="help-circle" style="width: 16px; color: var(--text-gray);"></i> Help Center</div>
+                            <div class="text-gray" style="font-size: 11px; margin-left: 24px; font-weight: 400;">Get help and find answers</div>
+                        </div>
+                        <i data-lucide="chevron-right" style="width: 16px; opacity: 0.5;"></i>
+                    </a>
+
+                    <a href="#" class="sidebar-link">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><i data-lucide="headphones" style="width: 16px; color: var(--text-gray);"></i> Contact Support</div>
+                            <div class="text-gray" style="font-size: 11px; margin-left: 24px; font-weight: 400;">We're here to help you</div>
+                        </div>
+                        <i data-lucide="chevron-right" style="width: 16px; opacity: 0.5;"></i>
+                    </a>
+
+                    <button class="btn btn-outline" id="btn-settings-logout" style="width: 100%; margin-top: 24px; color: #EF4444; border-color: #FCA5A5; display: flex; justify-content: center; gap: 8px;">
+                        <i data-lucide="log-out" style="width: 16px;"></i> Log Out
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-modal" class="modal-overlay">
+        <div class="modal-content floating-ui">
+            <div class="modal-header">
+                <h3 id="modal-title">Action</h3>
+                <i data-lucide="x" class="interactive-icon" id="btn-close-modal-icon"></i>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-actions" id="modal-actions">
+                <button class="btn btn-outline" id="btn-close-modal">Cancel</button>
+                <button class="btn btn-primary" id="btn-confirm-modal">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+    <div id="upgrade-overlay" class="upgrade-overlay">
+        <div class="upgrade-wrapper">
+            <button class="icon-btn upgrade-close-btn" id="btn-close-upgrade"><i data-lucide="x"></i></button>
+            
+            <div class="upgrade-header gs-up-anim">
+                <div>
+                    <h1 style="display: flex; align-items: center; gap: 12px;">
+                        <i data-lucide="crown" style="color: #F59E0B; width: 32px; height: 32px;"></i> 
+                        Upgrade to SAGE Pro
+                    </h1>
+                    <p>Unlock premium features and accelerate your learning</p>
+                </div>
+                <div class="badge-guarantee">
+                    <i data-lucide="shield-check" style="width: 16px;"></i> 30-Day Money Back Guarantee
+                </div>
+            </div>
+
+            <div class="upgrade-toggle-container gs-up-anim">
+                <div class="upgrade-toggle">
+                    <button class="up-toggle-btn" id="btn-monthly">Monthly <span style="font-size: 11px; font-weight: 500; display:block; color:var(--text-gray);">Billed monthly</span></button>
+                    <button class="up-toggle-btn active" id="btn-yearly">Yearly <span class="save-badge">Save 40%</span> <span style="font-size: 11px; font-weight: 500; display:block; color:var(--primary);">Billed yearly</span></button>
+                    <div class="up-toggle-slider"></div>
+                </div>
+            </div>
+
+            <div class="upgrade-grid">
+                <div class="up-tiers-container">
+                    
+                    <div class="up-tier-card gs-up-anim">
+                        <h3>Free</h3>
+                        <p class="tier-desc">Perfect for getting started</p>
+                        <div class="tier-price">$0<span>/month</span></div>
+                        <p class="tier-billed">Forever free</p>
+                        <button class="btn btn-outline btn-full" disabled style="background: var(--bg-gray); margin-top: 16px;">Your Current Plan</button>
+                        
+                        <ul class="tier-features">
+                            <li><i data-lucide="check"></i> AI Tutor (Limited) <i data-lucide="info" class="info-icon"></i></li>
+                            <li><i data-lucide="check"></i> 10 AI Tutor messages per day</li>
+                            <li><i data-lucide="check"></i> 5 Notes <i data-lucide="info" class="info-icon"></i></li>
+                            <li><i data-lucide="check"></i> 5 Quizzes per day</li>
+                            <li><i data-lucide="check"></i> Basic Flashcards <i data-lucide="info" class="info-icon"></i></li>
+                            <li><i data-lucide="check"></i> Study Planner (Basic)</li>
+                            <li><i data-lucide="check"></i> Basic Progress Tracking</li>
+                            <li><i data-lucide="check"></i> Community Support</li>
+                        </ul>
+                    </div>
+
+                    <div class="up-tier-card popular gs-up-anim">
+                        <div class="popular-banner">Most Popular</div>
+                        <h3>Pro</h3>
+                        <p class="tier-desc">For serious learners</p>
+                        <div class="tier-price">
+                            <span class="price-val" id="price-pro">$7.99</span><span>/month</span> 
+                            <span class="price-strike" id="strike-pro">$13.99</span>
+                        </div>
+                        <p class="tier-billed" id="billed-pro">Billed $95.88 yearly</p>
+                        <button class="btn btn-primary btn-full action-checkout" style="margin-top: 16px;">Upgrade to Pro</button>
+                        
+                        <ul class="tier-features">
+                            <li><i data-lucide="check" style="color: #10B981;"></i> <strong>Unlimited AI Tutor</strong> <i data-lucide="info" class="info-icon"></i></li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Unlimited Notes</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Unlimited Quizzes</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Advanced Flashcards</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Smart Study Planner</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Advanced Progress Analytics</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Custom Study Goals</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> AI Summary & Insights</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Export Notes & Flashcards</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Priority Support</li>
+                        </ul>
+                        <div class="tier-footer-save save-banner-dynamic">Save 40% with yearly billing</div>
+                    </div>
+
+                    <div class="up-tier-card pro-plus gs-up-anim">
+                        <h3>Pro+</h3>
+                        <p class="tier-desc">For power users & professionals</p>
+                        <div class="tier-price">
+                            <span class="price-val" id="price-pro-plus">$14.99</span><span>/month</span> 
+                            <span class="price-strike" id="strike-pro-plus">$24.99</span>
+                        </div>
+                        <p class="tier-billed" id="billed-pro-plus">Billed $179.88 yearly</p>
+                        <button class="btn btn-full action-checkout" style="margin-top: 16px; background: #8B5CF6; color: white; border: none;">Upgrade to Pro+</button>
+                        
+                        <ul class="tier-features">
+                            <li><i data-lucide="check" style="color: #10B981;"></i> <strong>Everything in Pro</strong></li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Advanced AI Models (GPT-4o) <i data-lucide="info" class="info-icon"></i></li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> AI Essay Grader</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Code Explained (Advanced)</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Unlimited File Uploads</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Advanced Analytics & Reports</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Study Streak Protection</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> Early Access to New Features</li>
+                            <li><i data-lucide="check" style="color: #10B981;"></i> 1-on-1 Priority Support</li>
+                        </ul>
+                        <div class="tier-footer-save save-banner-dynamic" style="color: #8B5CF6; background: #F5F3FF;">Save 40% with yearly billing</div>
+                    </div>
+
+                </div>
+
+                <div class="up-sidebar-container">
+                    
+                    <div class="up-side-card gs-up-side-anim">
+                        <h3 style="font-size: 16px; margin-bottom: 20px;">Why Upgrade?</h3>
+                        
+                        <div class="up-feature-box">
+                            <div class="up-f-icon" style="background: #EFF6FF; color: #3B82F6;"><i data-lucide="bot"></i></div>
+                            <div>
+                                <h4>Unlimited AI Tutor</h4>
+                                <p>Get unlimited help, explanations, and personalized guidance.</p>
+                            </div>
+                        </div>
+                        <div class="up-feature-box">
+                            <div class="up-f-icon" style="background: #F5F3FF; color: #8B5CF6;"><i data-lucide="layers"></i></div>
+                            <div>
+                                <h4>Unlimited Everything</h4>
+                                <p>Create unlimited notes, quizzes, and flashcards.</p>
+                            </div>
+                        </div>
+                        <div class="up-feature-box">
+                            <div class="up-f-icon" style="background: #ECFDF5; color: #10B981;"><i data-lucide="bar-chart-2"></i></div>
+                            <div>
+                                <h4>Advanced Analytics</h4>
+                                <p>Get deep insights into your progress and performance.</p>
+                            </div>
+                        </div>
+                        <div class="up-feature-box">
+                            <div class="up-f-icon" style="background: #FFFBEB; color: #F59E0B;"><i data-lucide="zap"></i></div>
+                            <div>
+                                <h4>Save Time</h4>
+                                <p>AI-powered tools to help you study smarter, not harder.</p>
+                            </div>
+                        </div>
+                        <div class="up-feature-box">
+                            <div class="up-f-icon" style="background: #FEF2F2; color: #EF4444;"><i data-lucide="headphones"></i></div>
+                            <div>
+                                <h4>Priority Support</h4>
+                                <p>Get help when you need it with priority customer support.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="up-side-card gs-up-side-anim">
+                        <h3 style="font-size: 16px; margin-bottom: 20px;">Loved by Learners</h3>
+                        
+                        <div class="up-testimonial">
+                            <img src="https://i.pravatar.cc/150?u=priya" alt="Priya">
+                            <div>
+                                <div class="up-stars"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></div>
+                                <p>"SAGE Pro has completely transformed the way I study. The AI Tutor is incredible!"</p>
+                                <span>— Priya Singh</span>
+                            </div>
+                        </div>
+                        <div class="up-testimonial" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+                            <img src="https://i.pravatar.cc/150?u=rahil" alt="Rahil">
+                            <div>
+                                <div class="up-stars"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></div>
+                                <p>"The unlimited quizzes and advanced insights helped me score better than ever!"</p>
+                                <span>— Rahil Mehta</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="up-secure-checkout gs-up-side-anim">
+                        <div style="display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px;">
+                            <i data-lucide="shield-check" style="color: #10B981; margin-top: 2px;"></i>
+                            <div>
+                                <h4 style="font-size: 13px; margin-bottom: 4px;">Secure Checkout</h4>
+                                <p style="font-size: 11px; color: var(--text-gray);">Your payment information is encrypted and 100% secure.</p>
+                            </div>
+                        </div>
+                        <div class="payment-methods">
+                            <span>VISA</span>
+                            <div class="mastercard-circles"><div class="mc-red"></div><div class="mc-orange"></div></div>
+                            <span>AMEX</span>
+                            <span>PayPal</span>
+                            <span style="display:flex; align-items:center; font-weight:700;"><i data-lucide="apple" style="width:12px; height:12px; margin-right:2px; fill:black; color:black;"></i>Pay</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="up-bottom-stats gs-up-anim">
+                <div class="up-stat-item">
+                    <div class="up-stat-icon" style="background: #EFF6FF; color: #3B82F6;"><i data-lucide="users"></i></div>
+                    <div><h4>10K+</h4><p>Active Learners</p></div>
+                </div>
+                <div class="up-stat-item">
+                    <div class="up-stat-icon" style="background: #FFFBEB; color: #F59E0B; fill: #F59E0B;"><i data-lucide="star"></i></div>
+                    <div>
+                        <h4>4.9/5</h4>
+                        <p style="display: flex; align-items: center; gap: 4px;">Rating <span class="up-stars-small"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></span></p>
+                    </div>
+                </div>
+                <div class="up-stat-item">
+                    <div class="up-stat-icon" style="background: #ECFDF5; color: #10B981;"><i data-lucide="shield-check"></i></div>
+                    <div><h4>98%</h4><p>Satisfaction Rate</p></div>
+                </div>
+                <div class="up-stat-item">
+                    <div class="up-stat-icon" style="background: #F5F3FF; color: #8B5CF6;"><i data-lucide="rotate-ccw"></i></div>
+                    <div><h4>30-Day</h4><p>Money Back Guarantee</p></div>
+                </div>
+            </div>
+
+            <div class="up-footer-link gs-up-anim">
+                Need a custom plan for your school or organization? <a href="#">Contact Sales</a>
+            </div>
+        </div>
+    </div>
+    <div id="profile-modal" class="modal-overlay">
+    <div class="modal-content floating-ui" style="max-width: 450px;">
+        <div class="modal-header">
+            <h3>Edit Profile</h3>
+            <i data-lucide="x" class="interactive-icon" id="btn-close-profile"></i>
+        </div>
+        <div class="modal-body" style="margin-bottom: 32px;">
+            
+            <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 24px;">
+                <div style="position: relative; margin-bottom: 12px;">
+                    <img id="profile-avatar-preview" src="https://ui-avatars.com/api/?name=User" style="width: 88px; height: 88px; border-radius: 50%; object-fit: cover; border: 3px solid var(--bg-white); box-shadow: var(--shadow-md);">
+                    <button id="btn-change-avatar" class="icon-btn floating-ui" style="position: absolute; bottom: 0; right: -8px; width: 34px; height: 34px; background: var(--primary); color: white; border: 2px solid var(--bg-white); border-radius: 50%;">
+                        <i data-lucide="camera" style="width: 14px;"></i>
+                    </button>
+                    <input type="file" id="avatar-upload" accept="image/png, image/jpeg, image/webp" style="display: none;">
+                </div>
+                <p class="text-gray" style="font-size: 12px; font-weight: 500;">Click the camera to update photo</p>
+            </div>
+
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="edit-profile-name" class="form-input" placeholder="e.g., Prakhar Verma">
+            </div>
+            
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="edit-profile-email" class="form-input" disabled style="opacity: 0.6; cursor: not-allowed; background: var(--bg-alt);" title="Email cannot be changed here">
+            </div>
+
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Bio / Current Focus</label>
+                <textarea id="edit-profile-bio" class="form-input" rows="3" placeholder="What are you currently studying?" style="resize: none;"></textarea>
+            </div>
+
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" id="btn-cancel-profile">Cancel</button>
+            <button class="btn btn-primary" id="btn-save-profile">Save Changes</button>
+        </div>
+    </div>
+</div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          // REPLACE WITH YOUR ACTUAL EMAILJS PUBLIC KEY
+          emailjs.init({ publicKey: "_tNW6JJQgo71SIB1w" }); 
+       })();
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
