@@ -2755,21 +2755,22 @@ let currentSummaryText = "";
 // const YOUTUBE_API_KEY = 'AIzaSyAL8cuB_TLoLLLIk7F_yZqxVS74fkPObv4';
 
 // 1. Fetch REAL Videos from YouTube API
+// 1. Fetch REAL Videos via Secure Backend
 async function fetchVideoRecommendations(topic) {
-    if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === 'YOUR_YOUTUBE_API_KEY_HERE') {
-    if(window.showToast) showToast("Missing YouTube API Key!", "error");
-    return [];
-    }
-
     try {
         const searchQuery = encodeURIComponent(topic + " educational lecture tutorial");
-        // Sending the search query to your secure backend instead
+        
+        // Sending the search query to your secure Vercel backend instead
         const url = `/api/youtube?q=${searchQuery}`; 
         
         const response = await fetch(url);
-        if (!response.ok) throw new Error("YouTube API Error");
+        
+        if (!response.ok) throw new Error("Backend API Error");
         
         const data = await response.json();
+        
+        // If the backend returned an error message, throw it
+        if (data.error) throw new Error(data.error);
         
         return data.items.map(item => {
             const tempDiv = document.createElement('div');
@@ -2785,66 +2786,10 @@ async function fetchVideoRecommendations(topic) {
         });
     } catch (error) {
         console.error("YouTube Fetch Error:", error);
-        if(window.showToast) showToast("Failed to fetch videos from YouTube.", "error");
+        if(window.showToast) showToast("Failed to fetch videos from backend.", "error");
         return [];
     }
 }
-
-// 2. Search & Render Grid
-btnSearchYt?.addEventListener('click', async () => {
-    const topic = ytInput.value.trim();
-    if (!topic) {
-        if(window.showToast) showToast("Please enter a topic first.", "error");
-        return;
-    }
-
-    ytGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; padding: 60px; text-align: center; color: var(--text-gray);">
-            <i data-lucide="loader" class="animate-spin" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 16px;"></i>
-            <h3>Searching YouTube for the best "${topic}" videos...</h3>
-        </div>
-    `;
-    if(window.lucide) lucide.createIcons();
-
-    const videos = await fetchVideoRecommendations(topic);
-    
-    if (videos.length === 0) {
-        ytGrid.innerHTML = `
-            <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: #EF4444; border: 1px dashed #EF4444; border-radius: 16px;">
-                <h3>No videos found, or API Key is missing.</h3>
-            </div>
-        `;
-        return;
-    }
-
-    ytGrid.innerHTML = ''; 
-
-    videos.forEach((vid) => {
-        const card = document.createElement('div');
-        card.className = 'yt-card gs-yt-anim';
-        card.innerHTML = `
-            <div class="yt-thumbnail-wrap">
-                <img src="https://img.youtube.com/vi/${vid.id}/maxresdefault.jpg" class="yt-thumbnail" onerror="this.src='https://img.youtube.com/vi/${vid.id}/hqdefault.jpg'">
-                <div class="yt-play-overlay"><div class="yt-play-btn"><i data-lucide="play" style="width: 20px; fill: white;"></i></div></div>
-            </div>
-            <div style="padding: 16px; display: flex; flex-direction: column; flex: 1;">
-                <h4 style="font-size: 14px; color: var(--text-dark); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${vid.title}</h4>
-                <div style="margin-top: auto; font-size: 12px; color: var(--text-gray); display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-weight: 500; color: var(--primary);"><i data-lucide="user" style="width: 12px; display: inline-block; margin-right: 4px;"></i>${vid.channel}</span>
-                    <span>${vid.date}</span>
-                </div>
-            </div>
-        `;
-        
-        // This is where it attaches the function to the click!
-        card.addEventListener('click', () => openSummarizer(vid));
-        ytGrid.appendChild(card);
-    });
-
-    if(window.lucide) lucide.createIcons();
-    gsap.fromTo('.gs-yt-anim', { y: 40, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.1, ease: "back.out(1.2)" });
-});
-
 // Trigger search on Enter
 ytInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') btnSearchYt.click(); });
 
