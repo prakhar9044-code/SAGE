@@ -2751,9 +2751,6 @@ const btnSaveSummary = document.getElementById('btn-save-summary');
 let currentVideoTitle = "";
 let currentSummaryText = "";
 
-// ⚠️ PASTE YOUR FREE YOUTUBE DATA API KEY HERE ⚠️
-// const YOUTUBE_API_KEY = 'AIzaSyAL8cuB_TLoLLLIk7F_yZqxVS74fkPObv4';
-
 async function fetchVideoRecommendations(topic) {
     if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === 'YOUR_YOUTUBE_API_KEY_HERE') {
     if(window.showToast) showToast("Missing YouTube API Key!", "error");
