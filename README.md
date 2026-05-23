@@ -485,14 +485,14 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 <div align="center">
 
 <!-- Replace with your actual GitHub username -->
-<a href="https://github.com/yourusername">
-  <img src="https://github.com/yourusername.png" width="100px" style="border-radius:50%" />
+<a href="https://github.com/prakhar9044-code">
+  <img src="https://github.com/prakhar9044-code.png" width="100px" style="border-radius:50%" />
 </a>
 
 **Your Name**
 
-[![GitHub](https://img.shields.io/badge/GitHub-@yourusername-181717?style=for-the-badge&logo=github)](https://github.com/yourusername)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/yourusername)
+[![GitHub](https://img.shields.io/badge/GitHub-@prakhar9044-code-181717?style=for-the-badge&logo=github)](https://github.com/prakhar9044-code)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/prakharai1212)
 [![Twitter](https://img.shields.io/badge/Twitter-@yourhandle-1DA1F2?style=for-the-badge&logo=twitter)](https://twitter.com/yourhandle)
 
 </div>
