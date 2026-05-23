@@ -489,7 +489,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
   <img src="https://github.com/prakhar9044-code.png" width="100px" style="border-radius:50%" />
 </a>
 
-**Your Name**
+PRAKHAR VERMA
 
 [![GitHub](https://img.shields.io/badge/GitHub-@prakhar9044-code-181717?style=for-the-badge&logo=github)](https://github.com/prakhar9044-code)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/prakharai1212)
